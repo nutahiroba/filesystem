@@ -40,15 +40,23 @@ for line in file_list:
   dataset[n] = [line.name, make_time, date_size, noundict[:5], words[:20]]
   n += 1
 
+dfdict, allwords = count_noun.getcount("".join(cutwordslist))
+
+file_path = "df.txt"
+
+with open(file_path, "w", encoding = "utf-8") as f:
+  for word in dfdict:
+    print(word, file = f)
+
 tfidfdict = tfidf.getvalues(cutwordslist)
 
-print(dataset[0])
-for id in dataset:
-  if id != 0:
-    print("{}".format(dataset[id][0]))
-    print("")
-    print("\t{}".format(dataset[id][3]))
-    print("\t{}\n".format(tfidfdict[id]))
+# print(dataset[0])
+# for id in dataset:
+#   if id != 0:
+#     print("{}".format(dataset[id][0]))
+#     print("")
+#     print("\t{}".format(dataset[id][3]))
+#     print("\t{}\n".format(tfidfdict[id]))
     # print(dataset[id])
 
 # print(len(dataset))
