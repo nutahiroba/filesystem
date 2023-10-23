@@ -1,0 +1,7 @@
+myvenv/
+trashbox/
+__pycache__/
+*.txt
+*.html
+*.svg
+*.jpg
