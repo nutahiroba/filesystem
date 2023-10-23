@@ -1,3 +1,5 @@
+# 文字列の単語数をカウントして辞書とリストを返す
+
 import MeCab
 
 def getcount(words):

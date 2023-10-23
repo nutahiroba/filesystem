@@ -1,3 +1,5 @@
+# ファイルパスを指定してそのファイルの最終更新時刻を返す
+
 import pathlib
 import datetime
 

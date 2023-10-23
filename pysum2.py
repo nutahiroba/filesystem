@@ -1,3 +1,5 @@
+# nlpを用いて一行要約を実装しようとした
+
 import spacy
 import pathlib
 import docx

@@ -1,3 +1,5 @@
+# 使わなかった機能が入ってる
+
 import pathlib
 import datetime
 import os

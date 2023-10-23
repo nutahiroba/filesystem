@@ -1,3 +1,4 @@
+# ファイルパスから文章の要約を行うコード
 # 参考：https://resanaplaza.com/2022/05/19/%E3%80%90%E5%AE%9F%E8%B7%B5%E3%80%91python%EF%BC%8Bpysummarization%E3%81%A7%E6%96%87%E6%9B%B8%E8%A6%81%E7%B4%84%EF%BC%88%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%83%9E%E3%82%A4%E3%83%8B%E3%83%B3/
 
 from pysummarization.nlpbase.auto_abstractor import AutoAbstractor

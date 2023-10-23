@@ -1,3 +1,5 @@
+# 文字列からtfidf値の計算
+
 import MeCab
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer

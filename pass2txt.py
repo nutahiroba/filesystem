@@ -1,3 +1,5 @@
+# ファイルパスからそのファイルの文字列を返す
+
 import docx
 import MeCab
 

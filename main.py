@@ -1,3 +1,5 @@
+# メインのプログラムコード
+
 import pathlib
 import os
 import pass2times

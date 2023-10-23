@@ -1,4 +1,5 @@
-# ライブラリのインポート
+#ファイルパスからワードクラウドを作成するコード
+
 from wordcloud import WordCloud
 import pass2txt
 import count_noun
