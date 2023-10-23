@@ -2,6 +2,7 @@ myvenv/
 trashbox/
 __pycache__/
 *.txt
+!Japanese.txt
 *.html
 *.svg
 *.jpg
