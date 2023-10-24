@@ -3,6 +3,7 @@ trashbox/
 __pycache__/
 *.txt
 !Japanese.txt
+!stopword.txt
 *.html
 *.svg
 *.jpg
