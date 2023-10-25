@@ -1,3 +1,5 @@
+# stopwordを指定するテキストファイルを作成する
+
 from nltk.corpus import stopwords
 import nltk
 

@@ -4,6 +4,7 @@ from wordcloud import WordCloud
 import pass2txt
 import count_noun
 from os import path
+import count_noun
 
 # テキストのサンプル
 p = r"C:\Users\nutta\OneDrive\ドキュメント\授業資料\知識形成論：第1回.docx"
@@ -27,7 +28,11 @@ wc = WordCloud(
   )
 
 # ワードクラウドの作成
-wc.generate(text)
+# wc.generate(text)
+
+# 辞書からワードクラウドを作成
+noundict = count_noun.getcount(text)
+wc.generate_from_frequencies(noundict[0])
 
 # WindowsパソコンのPドライブ直下に画像を保存
 # if wordcloud.colormap == "jet":

@@ -24,5 +24,5 @@ def getcount(words):
     else:
       pass
     node = node.next
-  noundict = sorted(noundict.items(), key = lambda x:x[1], reverse=True)
+  # noundict = sorted(noundict.items(), key = lambda x:x[1], reverse=True)
   return noundict, cutwords

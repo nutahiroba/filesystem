@@ -1,5 +1,4 @@
 # メインのプログラムコード
-
 import pathlib
 import os
 import pass2times
@@ -7,12 +6,14 @@ import pass2txt
 import count_noun
 import hashlib
 import tfidf
+import make_wc
+import wc2html
 
-
-
+# フォルダの指定
 p = pathlib.Path(r"C:\Users\nutta\OneDrive\ドキュメント\授業資料")
 file_list = list(p.glob("*.docx"))
 
+# データセットの作成
 dataset = {}
 dataset[0] = ["ファイル名", "作成日時","最終更新日時","ファイルサイズ(Byte)","再頻出語(上位3件)", "冒頭"]
 n = 1
@@ -26,6 +27,7 @@ for line in file_list:
   # 内容が同じファイルを初めのファイル以外無視する（ハッシュ値）
   hs = hashlib.md5(words.encode()).hexdigest()
   if hs in wordshash:
+    # ループの先頭に戻ってやり直す
     continue
   else:
     wordshash.append(hs)
@@ -37,7 +39,7 @@ for line in file_list:
   noundict, cutwords = count_noun.getcount(words)
   cutwordslist.append(" ".join(cutwords))
 
-  dataset[n] = [line.name, make_time, date_size, noundict[:5], words[:20]]
+  # dataset[n] = [line.name, make_time, date_size, noundict[:5], words[:20]]
   n += 1
 
 dfdict, allwords = count_noun.getcount("".join(cutwordslist))
@@ -50,19 +52,6 @@ with open(file_path, "w", encoding = "utf-8") as f:
 
 tfidfdict = tfidf.getvalues(cutwordslist)
 
-# print(dataset[0])
-# for id in dataset:
-#   if id != 0:
-#     print("{}".format(dataset[id][0]))
-#     print("")
-#     print("\t{}".format(dataset[id][3]))
-#     print("\t{}\n".format(tfidfdict[id]))
-    # print(dataset[id])
+wc = make_wc.get(dfdict)
 
-# print(len(dataset))
-
-
-
-# pandasによるテーブル化を断念
-# d1 = pd.DataFrame(dataset,columns=["ファイル名", "作成日時","最終更新日時","ファイルサイズ(Byte)","再頻出語(上位3件)", "冒頭"])
-# print(d1)
+wc2html.get(wc)

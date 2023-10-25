@@ -2,15 +2,17 @@ import pass2txt
 import count_noun
 from nltk.corpus import stopwords
 import nltk
+import make_wc
 
+make_wc.get({"a":10})
 
-with open("stopword.txt", "r",encoding="utf-8") as f:
-  stopwords = f.readlines()
+# with open("stopword.txt", "r",encoding="utf-8") as f:
+#   stopwords = f.readlines()
 
-stopwords = [string.strip() for string in stopwords if string.strip()]
+# stopwords = [string.strip() for string in stopwords if string.strip()]
 
-for word in stopwords:
-  print(word)
+# for word in stopwords:
+#   print(word)
 
 # nltk.download('stopwords')
 # stop_words = stopwords.words('english')
