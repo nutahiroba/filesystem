@@ -54,4 +54,4 @@ tfidfdict = tfidf.getvalues(cutwordslist)
 
 wc = make_wc.get(dfdict)
 
-wc2html.get(wc)
+wc2html.get(wc, "wc.html")

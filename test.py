@@ -49,3 +49,21 @@ make_wc.get({"a":10})
 
 # stopwords = [string.strip() for string in stopwords if string.strip()]
 # print(stopwords[:3])
+
+
+    svg = document.getElementsByTagName("svg")[0];
+    text_tags =  svg.getElementsByTagName("text")
+    for(var i=0; i<text_tags.length; i++){
+        text_tags[i].addEventListener(
+            "click",
+            function(){
+                word = this.textContent;
+                console.log(this);
+                this.setAttribute("style", "border: 3px solid;");
+                word_uri = encodeURI(word);
+                url = "https://www.google.com/search?q=" + word_uri;
+                window.open(url, "_bkank");
+
+            }
+        )
+    }
