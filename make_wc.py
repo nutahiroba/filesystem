@@ -10,8 +10,8 @@ def get(words):
     background_color = "white",
     # grayでモノクロ、jetでRGB
     colormap = "jet",
-    width = 400,
-    height = 400,
+    width = 600,
+    height = 600,
     font_step = 6,
     min_font_size=6
     )

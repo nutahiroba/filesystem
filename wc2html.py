@@ -39,7 +39,6 @@ document.querySelectorAll('text').forEach(textElement => {
     const position = textElement.getAttribute('transform');
         // 枠の要素を作成
         const bbox = textElement.getBBox();
-        console.log(bbox);
         const rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
         rect.setAttribute('x', bbox.x);
         rect.setAttribute('y', bbox.y);
