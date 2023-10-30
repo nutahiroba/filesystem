@@ -6,7 +6,10 @@ import json
 app = Flask(__name__, static_folder = '.', static_url_path = '')
 
 p = pathlib.Path(r"C:\Users\nutta\OneDrive\ドキュメント\授業資料")
-file_list = list(p.glob("*.docx"))
+docs_list = list(p.glob("*.docx"))
+file_list = []
+for doc in docs_list:
+    file_list.append(str(doc).split("\\")[-1])
 
 @app.route('/')
 def index():
@@ -23,11 +26,15 @@ def index():
 @app.route('/post_text', methods=['POST'])
 def post_text():
     text = request.json.get('text', '')
-    
+
+    select_words = []
+    select_words.append("text")
+
     tmp = []
     for file in file_list:
-        if text in str(file):
-            tmp.append(str(file))
+        for word in select_words:
+            if word in str(file):
+                tmp.append(str(file))
 
     json_data = {"items": tmp}
 
