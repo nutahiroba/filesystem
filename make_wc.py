@@ -1,19 +1,18 @@
 # 辞書orテキストからwcをsvgで作成
-
 from wordcloud import WordCloud
 
 def get(words):
 
   wc = WordCloud(
-    font_path='C:\Windows\Fonts\yumin.ttf',
+    font_path = 'C:\Windows\Fonts\yumin.ttf',
     prefer_horizontal = 1,
     background_color = "white",
     # grayでモノクロ、jetでRGB
     colormap = "jet",
     width = 600,
     height = 600,
-    font_step = 6,
-    min_font_size=6
+    # font_step = 25,
+    min_font_size=15,
     )
   
   if type(words) == dict:
@@ -22,6 +21,6 @@ def get(words):
     wc.generate_from_text(words)
   else:
     print("This is unravaliable")
-    return 0
+    return None
   
   return wc
