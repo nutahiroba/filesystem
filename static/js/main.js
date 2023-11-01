@@ -49,6 +49,10 @@ textElements.forEach(textElement => {
 			rect.setAttribute('fill', 'transparent');
 			rect.setAttribute('stroke-width', '3');
 			rect.setAttribute('class', 'outlined');
+<<<<<<< HEAD
+=======
+			console.log(textElement);
+>>>>>>> 4e9e6956bdc80c0b106207a4b6bd3e92daabd8dc
 			// 枠をSVGに追加
 			textElement.parentNode.insertBefore(rect, textElement);
 
@@ -63,6 +67,7 @@ textElements.forEach(textElement => {
 				outlinedRect.parentNode.removeChild(outlinedRect);
 			}
 		}
+<<<<<<< HEAD
 
 
 		fetch('send_List',{
@@ -101,5 +106,8 @@ textElements.forEach(textElement => {
 		.catch((error) =>{
 			console.log('エラー' + error);
 		})
+=======
+	console.log(recordedTexts);
+>>>>>>> 4e9e6956bdc80c0b106207a4b6bd3e92daabd8dc
 	})
 })

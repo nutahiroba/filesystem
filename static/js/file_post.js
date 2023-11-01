@@ -58,7 +58,11 @@ document.querySelectorAll('text').forEach(textElement => {
       }
       textClicked = false;
     }
+<<<<<<< HEAD
 // ------------------------------------ここまで--------------------------------
+=======
+
+>>>>>>> 4e9e6956bdc80c0b106207a4b6bd3e92daabd8dc
     // テキストの内容をPOSTする
     fetch('/post_text', {
       method: 'POST',

@@ -9,26 +9,52 @@ file_list = []
 for doc in docs_list:
     file_list.append(str(doc).split("\\")[-1])
 
-recorded_text_list = []
+global select_words
 
 @app.route('/')
 def index():
+    select_words = []
     return render_template("wc.html")
 
-@app.route('/send_List', methods=['POST'])
-def send_list():
-    data = request.get_json()
-    received_text_list = data.get('recordedTexts', [])
+
+# @app.route('/upload', methods=['POST'])
+# def upload():
+#     data = request.get_json()
+#     folderPath = data.get('folderPath', [])
+#     response_message = f'受信したフォルダパス: {", ".join(folderPath)}'
+#     return response_message
+
+
+select_words = []
+
+@app.route('/post_text', methods=['POST'])
+def post_text():
+    text = request.json.get('text', '')
+
+    if text in select_words:
+        select_words.remove(text)
+    else:
+        select_words.append(text)
+
+    flg = 0
 
     tmp = []
     for file in file_list:
-        if all(word in file for word in received_text_list):
+        if all(word in file for word in select_words):
             tmp.append(file)
+    
+    print(text, select_words)
 
     if len(tmp) == 0:
         json_data = {"items":"undified"}
     else:
         json_data = {"items": tmp}
+<<<<<<< HEAD
+=======
+
+    
+    print(json_data)
+>>>>>>> 4e9e6956bdc80c0b106207a4b6bd3e92daabd8dc
 
     return jsonify(json_data)
 
