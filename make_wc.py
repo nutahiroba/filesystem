@@ -11,6 +11,7 @@ def get(words):
     colormap = "jet",
     width = 600,
     height = 600,
+    # font_stepが動作しない
     # font_step = 25,
     min_font_size=15,
     )
