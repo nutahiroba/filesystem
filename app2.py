@@ -6,11 +6,10 @@ recorded_text_list = []
 
 @app.route('/')
 def index():
-    return render_template("test2.html")
+    return render_template("wc.html")
 
 @app.route('/sendList', methods=['POST'])
 def send_list():
-    global recorded_text_list
     data = request.get_json()
     received_text_list = data.get('recordedTexts', [])
     tmp = []
@@ -26,4 +25,4 @@ def send_list():
     return jsonify(json_data)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port = 8000, debug=True)
