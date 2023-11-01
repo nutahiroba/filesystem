@@ -49,12 +49,6 @@ def post_text():
         json_data = {"items":"undified"}
     else:
         json_data = {"items": tmp}
-<<<<<<< HEAD
-=======
-
-    
-    print(json_data)
->>>>>>> 4e9e6956bdc80c0b106207a4b6bd3e92daabd8dc
 
     return jsonify(json_data)
 

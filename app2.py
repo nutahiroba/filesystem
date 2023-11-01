@@ -13,12 +13,17 @@ def send_list():
     global recorded_text_list
     data = request.get_json()
     received_text_list = data.get('recordedTexts', [])
+    tmp = []
+    for file in received_text_list:
+        if all(word in file for word in received_text_list):
+            tmp.append(file)
 
-    # サーバーでリストを処理することができます
-    # この例では、受け取ったリストをそのまま返します
-    recorded_text_list = received_text_list
-    response_message = {"message": "リストを受け取りました"}
-    return jsonify(response_message)
+    if len(tmp) == 0:
+        json_data = {"items":"undified"}
+    else:
+        json_data = {"items": tmp}
+
+    return jsonify(json_data)
 
 if __name__ == '__main__':
     app.run(debug=True)
