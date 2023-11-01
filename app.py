@@ -11,9 +11,12 @@ file_list = []
 for doc in docs_list:
     file_list.append(str(doc).split("\\")[-1])
 
+global select_words
+
 @app.route('/')
 def index():
-    return render_template("test.html", items = file_list)
+    select_words = []
+    return render_template("wc.html")
 
 
 # @app.route('/upload', methods=['POST'])
@@ -23,20 +26,34 @@ def index():
 #     response_message = f'受信したフォルダパス: {", ".join(folderPath)}'
 #     return response_message
 
+
+select_words = []
+
 @app.route('/post_text', methods=['POST'])
 def post_text():
     text = request.json.get('text', '')
 
-    select_words = []
-    select_words.append("text")
+    if text in select_words:
+        select_words.remove(text)
+    else:
+        select_words.append(text)
+
+    flg = 0
 
     tmp = []
     for file in file_list:
-        for word in select_words:
-            if word in str(file):
-                tmp.append(str(file))
+        if all(word in file for word in select_words):
+            tmp.append(file)
+    
+    print(text, select_words)
 
-    json_data = {"items": tmp}
+    if len(tmp) == 0:
+        json_data = {"items":"undified"}
+    else:
+        json_data = {"items": tmp}
+
+    
+    print(json_data)
 
     # ここでテキストを処理または保存することができます
     return json.dumps(json_data)
