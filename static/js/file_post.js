@@ -58,7 +58,7 @@ document.querySelectorAll('text').forEach(textElement => {
       }
       textClicked = false;
     }
-
+// ------------------------------------ここまで--------------------------------
     // テキストの内容をPOSTする
     fetch('/post_text', {
       method: 'POST',

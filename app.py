@@ -1,7 +1,5 @@
-import os
-import pathlib
 from flask import Flask, render_template, request, jsonify
-import json
+import pathlib
 
 app = Flask(__name__, static_folder = '.', static_url_path = '')
 
@@ -11,35 +9,28 @@ file_list = []
 for doc in docs_list:
     file_list.append(str(doc).split("\\")[-1])
 
+recorded_text_list = []
+
 @app.route('/')
 def index():
-    return render_template("test.html", items = file_list)
+    return render_template("wc.html")
 
-
-# @app.route('/upload', methods=['POST'])
-# def upload():
-#     data = request.get_json()
-#     folderPath = data.get('folderPath', [])
-#     response_message = f'受信したフォルダパス: {", ".join(folderPath)}'
-#     return response_message
-
-@app.route('/post_text', methods=['POST'])
-def post_text():
-    text = request.json.get('text', '')
-
-    select_words = []
-    select_words.append("text")
+@app.route('/send_List', methods=['POST'])
+def send_list():
+    data = request.get_json()
+    received_text_list = data.get('recordedTexts', [])
 
     tmp = []
     for file in file_list:
-        for word in select_words:
-            if word in str(file):
-                tmp.append(str(file))
+        if all(word in file for word in received_text_list):
+            tmp.append(file)
 
-    json_data = {"items": tmp}
+    if len(tmp) == 0:
+        json_data = {"items":"undified"}
+    else:
+        json_data = {"items": tmp}
 
-    # ここでテキストを処理または保存することができます
-    return json.dumps(json_data)
+    return jsonify(json_data)
 
-
-app.run(port = 8000, debug = True)
+if __name__ == '__main__':
+    app.run(port = 8000, debug=True)

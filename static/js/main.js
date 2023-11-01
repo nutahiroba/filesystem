@@ -49,7 +49,6 @@ textElements.forEach(textElement => {
 			rect.setAttribute('fill', 'transparent');
 			rect.setAttribute('stroke-width', '3');
 			rect.setAttribute('class', 'outlined');
-			console.log(textElement);
 			// 枠をSVGに追加
 			textElement.parentNode.insertBefore(rect, textElement);
 
@@ -64,6 +63,43 @@ textElements.forEach(textElement => {
 				outlinedRect.parentNode.removeChild(outlinedRect);
 			}
 		}
-	console.log(recordedTexts);
+
+
+		fetch('send_List',{
+			method:'POST',
+			headers:{
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ recordedTexts }),
+		})
+		.then((response) =>{
+			if (response.ok) {
+			  console.log('テキストがPOSTされました');
+			} else {
+			  console.error('テキストのPOSTに失敗しました');
+			}
+			return response.json();
+		})
+		// -------------------------受け取った値の処理--------------------------
+		.then(data => {
+			const fileList = data.items;
+			const filedisplay = document.getElementById("file_list");
+			filedisplay.innerHTML = "";
+			if (fileList == "undified"){
+				filedisplay.innerHTML = "<p>対象無し</p>";
+			}else{
+				fileList.unshift('ファイル名');
+				fileList.forEach((item) => {
+				const row = document.createElement('tr');
+				const cell = document.createElement('td');
+				cell.textContent = item;
+				row.appendChild(cell);
+				filedisplay.appendChild(row);
+				});
+			}
+		})
+		.catch((error) =>{
+			console.log('エラー' + error);
+		})
 	})
 })
