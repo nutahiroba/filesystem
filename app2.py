@@ -1,6 +1,15 @@
 from flask import Flask, render_template, request, jsonify
+import pathlib
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder = '.', static_url_path = '')
+
+p = pathlib.Path(r"C:\Users\nutta\OneDrive\ドキュメント\授業資料")
+docs_list = list(p.glob("*.docx"))
+
+file_list = []
+
+for doc in docs_list:
+    file_list.append(str(doc).split("\\")[-1])
 
 recorded_text_list = []
 
@@ -13,7 +22,7 @@ def send_list():
     data = request.get_json()
     received_text_list = data.get('recordedTexts', [])
     tmp = []
-    for file in received_text_list:
+    for file in file_list:
         if all(word in file for word in received_text_list):
             tmp.append(file)
 

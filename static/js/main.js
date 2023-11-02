@@ -29,7 +29,7 @@ textElements.forEach(textElement => {
 	// ------------------以下クリック時----------------------
 
 	textElement.addEventListener('click', () => {
-		const  clickedText = textElement.textContent;
+		const clickedText = textElement.textContent;
 
 		const index = recordedTexts.indexOf(clickedText);
 
@@ -45,14 +45,14 @@ textElements.forEach(textElement => {
 			rect.setAttribute('y', bbox.y);
 			rect.setAttribute('width', bbox.width);
 			rect.setAttribute('height', bbox.height);
-			rect.setAttribute('stroke', 'red'); 
+			rect.setAttribute('stroke', 'red');
 			rect.setAttribute('fill', 'transparent');
 			rect.setAttribute('stroke-width', '3');
 			rect.setAttribute('class', 'outlined');
 			// 枠をSVGに追加
 			textElement.parentNode.insertBefore(rect, textElement);
 
-		// ------------------クリック時に枠を削除----------------------
+			// ------------------クリック時に枠を削除----------------------
 		} else {
 			// リストから削除
 			recordedTexts.splice(index, 1);
@@ -63,43 +63,45 @@ textElements.forEach(textElement => {
 				outlinedRect.parentNode.removeChild(outlinedRect);
 			}
 		}
-		
 
-		fetch('/sendList',{
-			method:'POST',
-			headers:{
+		console.log(recordedTexts);
+
+
+		fetch('/sendList', {
+			method: 'POST',
+			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({recordedTexts}),
+			body: JSON.stringify({ recordedTexts }),
 		})
-		.then((response) =>{
-			if (response.ok) {
-			  console.log('テキストがPOSTされました');
-			} else {
-			  console.error('テキストのPOSTに失敗しました');
-			}
-			return response.json();
-		})
-		// -------------------------受け取った値の処理--------------------------
-		.then(data => {
-			const fileList = data.items;
-			const filedisplay = document.getElementById("file_list");
-			filedisplay.innerHTML = "";
-			if (fileList == "undified"){
-				filedisplay.innerHTML = "<p>対象無し</p>";
-			}else{
-				fileList.unshift('ファイル名');
-				fileList.forEach((item) => {
-				const row = document.createElement('tr');
-				const cell = document.createElement('td');
-				cell.textContent = item;
-				row.appendChild(cell);
-				filedisplay.appendChild(row);
-				});
-			}
-		})
-		.catch((error) =>{
-			console.log('エラー' + error);
-		})
+			.then((response) => {
+				if (response.ok) {
+					console.log('テキストがPOSTされました');
+				} else {
+					console.error('テキストのPOSTに失敗しました');
+				}
+				return response.json();
+			})
+			// -------------------------受け取った値の処理--------------------------
+			.then(data => {
+				const fileList = data.items;
+				const filedisplay = document.getElementById("file_list");
+				filedisplay.innerHTML = "";
+				if (fileList == "undified") {
+					filedisplay.innerHTML = "<p>対象無し</p>";
+				} else {
+					fileList.unshift('ファイル名');
+					fileList.forEach((item) => {
+						const row = document.createElement('tr');
+						const cell = document.createElement('td');
+						cell.textContent = item;
+						row.appendChild(cell);
+						filedisplay.appendChild(row);
+					});
+				}
+			})
+			.catch((error) => {
+				console.log('エラー' + error);
+			})
 	})
 })
