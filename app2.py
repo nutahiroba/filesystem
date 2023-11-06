@@ -1,7 +1,12 @@
 from flask import Flask, render_template, request, jsonify
 import pathlib
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__, static_folder = '.', static_url_path = '')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.words'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 
 p = pathlib.Path(r"C:\Users\nutta\OneDrive\ドキュメント\授業資料")
 docs_list = list(p.glob("*.docx"))
@@ -12,6 +17,10 @@ for doc in docs_list:
     file_list.append(str(doc).split("\\")[-1])
 
 recorded_text_list = []
+
+class Words(db.Model):
+    file_id = db.column(db.integer, primary_key = True)
+    cutwords = db.column(db.String(10000), nullable = False)
 
 @app.route('/')
 def index():
