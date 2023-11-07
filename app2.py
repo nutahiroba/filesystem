@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, jsonify
 import pathlib
 from flask_sqlalchemy import SQLAlchemy
+from .wc import main
 
 app = Flask(__name__, static_folder = '.', static_url_path = '')
 
 p = pathlib.Path(r"C:\Users\nutta\OneDrive\ドキュメント\授業資料")
-docs_list = list(p.glob("*.docx"))
+main(p)
 
+docs_list = list(p.glob("*.docx"))
 file_list = []
 
 for doc in docs_list:
