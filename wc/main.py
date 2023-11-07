@@ -1,13 +1,13 @@
 # メインのプログラムコード
 import pathlib
 import os
-import pass2times
-import pass2txt
-import count_noun
+import wc.pass2times as pass2times
+import static.txt.pass2txt as pass2txt
+import wc.count_noun as count_noun
 import hashlib
-import tfidf
-import make_wc
-import wc2html
+import wc.tfidf as tfidf
+import wc.make_wc as make_wc
+import wc.wc2html as wc2html
 
 # フォルダの指定
 p = pathlib.Path(r"C:\Users\nutta\OneDrive\ドキュメント\授業資料")

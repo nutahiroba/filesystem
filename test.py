@@ -1,8 +1,8 @@
-import pass2txt
-import count_noun
+import static.txt.pass2txt as pass2txt
+import wc.count_noun as count_noun
 from nltk.corpus import stopwords
 import nltk
-import make_wc
+import wc.make_wc as make_wc
 from docx import Document
 import pathlib
 
