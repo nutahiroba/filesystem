@@ -6,7 +6,7 @@ def getcount(words):
   tagger = MeCab.Tagger()
   cutwords = []
 
-  with open("stopword.txt", "r",encoding="utf-8") as f:
+  with open(r"C:\Users\nutta\myProject\FileSystem\wc\stopword.txt", "r",encoding="utf-8") as f:
     stopwords = f.readlines()
   stopwords = [string.strip() for string in stopwords if string.strip()]
 
@@ -15,7 +15,8 @@ def getcount(words):
   while node:
     word = node.surface
     hinshi = node.feature.split(",")[0]
-    cutwords.append(word)
+    if hinshi == "名詞" and word not in stopwords:
+      cutwords.append(word)
 
     if hinshi == "名詞" and word in noundict.keys():
       noundict[word] += 1

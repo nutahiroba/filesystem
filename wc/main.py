@@ -1,18 +1,17 @@
 # メインのプログラムコード
 import pathlib
 import os
-import wc.pass2times as pass2times
+import pass2times as pass2times
 import pass2txt
-import wc.count_noun as count_noun
+import count_noun as count_noun
 import hashlib
-import wc.tfidf as tfidf
-import wc.make_wc as make_wc
-import wc.wc2html as wc2html
+import tfidf as tfidf
+import make_wc as make_wc
+import wc2html as wc2html
 
 def wc(path):
   # フォルダの指定
-  p = pathlib.Path(r"C:\Users\nutta\OneDrive\ドキュメント\授業資料")
-  file_list = list(p.glob("*.docx"))
+  file_list = list(path.glob("*.docx"))
 
   # データセットの作成
   dataset = {}
@@ -55,4 +54,12 @@ def wc(path):
 
   wc = make_wc.get(dfdict)
 
-  wc2html.get(wc, "wc.html")
+  file_path = "templates\wc2.html"
+  wc2html.get(wc, file_path)
+  return cutwordslist
+
+
+p = pathlib.Path(r"C:\Users\nutta\OneDrive\ドキュメント\授業資料")
+
+words = wc(p)
+
