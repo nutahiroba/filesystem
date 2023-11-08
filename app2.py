@@ -6,7 +6,7 @@ from .wc import main
 app = Flask(__name__, static_folder = '.', static_url_path = '')
 
 p = pathlib.Path(r"C:\Users\nutta\OneDrive\ドキュメント\授業資料")
-main(p)
+main.wc(p)
 
 docs_list = list(p.glob("*.docx"))
 file_list = []
