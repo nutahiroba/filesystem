@@ -11,7 +11,7 @@ import wc2html as wc2html
 
 def wc(path):
   # フォルダの指定
-  file_list = list(path.glob("*.docx"))
+  file_list = path.glob("*.docx")
 
   # データセットの作成
   dataset = {}
@@ -36,13 +36,13 @@ def wc(path):
     # ファイルサイズ取得
     date_size = os.path.getsize(line)
     # 名詞数カウント
-    noundict, cutwords = count_noun.getcount(words)
+    dfdict, cutwords = count_noun.getcount(line, words)
     cutwordslist.append(" ".join(cutwords))
 
     # dataset[n] = [line.name, make_time, date_size, noundict[:5], words[:20]]
     n += 1
 
-  dfdict, allwords = count_noun.getcount("".join(cutwordslist))
+  # dfdict, allwords = count_noun.getcount("".join(cutwordslist))
 
   file_path = "df.txt"
 
