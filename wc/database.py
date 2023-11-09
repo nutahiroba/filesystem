@@ -6,6 +6,8 @@ import MeCab
 import random
 import string
 from pprint import pprint
+import docx
+import hashlib
 
 engine = create_engine('sqlite:///words.db', echo=True)
 Base = declarative_base()
@@ -17,18 +19,32 @@ class Files(Base):
   id = Column(String, primary_key=True)
   path = Column(String, unique=True)
   cutwords = Column(String)
-  noundict = Column(String)
+  dfdict = Column(String)
 
-  def __init__(self,id, path, cutwords, noundict):
+  def __init__(self,id, path, cutwords, dfdict):
     self.id = id
     self.path = path
     self.cutwords = cutwords
-    self.noundict = noundict
+    self.dfdict = dfdict
 
   def __str__(self):
-    return f"id:{self.id},path:{self.path},cutwords:{self.cutwords},noundict:{self.noundict}"
+    return f"id:{self.id},path:{self.path},cutwords:{self.cutwords},dfdict:{self.dfdict}"
 
 Base.metadata.create_all(engine)
+
+
+def PathtoTxt(path):
+  if ".docx" in str(path):
+    doc = docx.Document(path)
+    words = ""
+    for par in doc.paragraphs:
+      words += par.text.replace("\u2028", "")
+  elif ".txt" in str(path):
+    # 行ごとに分割
+    with open(path, encoding="utf-8") as f:
+      contents = f.readlines()
+    words = "".join(contents)
+  return words
 
 def converttostr(input_list):
   return ' '.join(map(str, input_list))
@@ -40,8 +56,6 @@ def converttolist(input_str):
 def ispath_exists(path):
   path = str(path)
   exists = session.query(Files).filter(Files.path == path).count()
-  # pprint(exists)
-  # print(type(exists))
   if exists != 0:
     return True
   # ループがすべてのファイルを検査し終えても一致するものが見つからない場合
@@ -50,11 +64,10 @@ def ispath_exists(path):
 def dbgetfile(path):
   path = str(path)
   file = session.query(Files).filter(Files.path == path).first()
-  # for file in files:
   if file is not None:
-    return converttostr(file.cutwords), converttostr(file.noundict)
+    return file.cutwords, file.dfdict
   else:
-    # print("404 指定されたパスのドキュメントが見つかりませんでした")
+    print("404 指定されたパスのドキュメントが見つかりませんでした")
     return None
 
 def genid(length=8):
@@ -62,33 +75,32 @@ def genid(length=8):
     random_id = ''.join(random.choice(characters) for _ in range(length))
     return random_id
 
-
-
-def regtodb(path, cutwords, noundict):
+def regtodb(path, cutwords, dfdict):
     path_str = str(path)
     # 辞書オブジェクトを文字列に変換
-    noundict_str = converttostr(noundict)
+    dfdict_str = converttostr(dfdict)
     cutwords_str = converttostr(cutwords)
     id = genid()
     #DBに登録
-    file = Files(id=id, path=path_str, cutwords=cutwords_str, noundict=noundict_str)
+    file = Files(id=id, path=path_str, cutwords=cutwords_str, dfdict=dfdict_str)
     session.add(file)
     session.commit()
 
-def getcount(path, words):
-  # if ispath_exists(path):
-  dbfile = dbgetfile(path)
-  # print(dbfile)
-  if dbfile is not None:
-    return dbfile
-  tagger = MeCab.Tagger()
-  cutwords = []
+def makedb(path):
+  # dbfile = dbgetfile(path)
+  if ispath_exists(path):
+    return None
 
   with open(r"C:\Users\nutta\myProject\FileSystem\wc\stopword.txt", "r",encoding="utf-8") as f:
     stopwords = f.readlines()
   stopwords = [string.strip() for string in stopwords if string.strip()]
 
-  noundict = {}
+  # 文字列取得
+  words = PathtoTxt(path)
+
+  tagger = MeCab.Tagger()
+  cutwords = []
+  dfdict = {}
   node = tagger.parseToNode(words)
   while node:
     word = node.surface
@@ -96,16 +108,21 @@ def getcount(path, words):
     if hinshi == "名詞" and word not in stopwords:
       cutwords.append(word)
 
-    if word in noundict.keys():
-      noundict[word] += 1
+    if word in dfdict.keys():
+      dfdict[word] += 1
     elif hinshi == "名詞" and len(word) != 1 and word not in stopwords:
-      noundict[word] = 1
+      dfdict[word] = 1
     else:
       pass
     node = node.next
-  # noundict = sorted(noundict.items(), key = lambda x:x[1], reverse=True)
-  regtodb(path, noundict, cutwords)
-  return noundict, cutwords
+  # dfdict = sorted(dfdict.items(), key = lambda x:x[1], reverse=True)
+  regtodb(path, dfdict, cutwords)
+  return dfdict, cutwords
+
+def getval(path):
+  return 0
+
+
 
 # DBに依存しないタイプ
 def raw_getcount(words):
@@ -116,7 +133,7 @@ def raw_getcount(words):
     stopwords = f.readlines()
   stopwords = [string.strip() for string in stopwords if string.strip()]
 
-  noundict = {}
+  dfdict = {}
   node = tagger.parseToNode(words)
   while node:
     word = node.surface
@@ -124,12 +141,12 @@ def raw_getcount(words):
     if hinshi == "名詞" and word not in stopwords:
       cutwords.append(word)
 
-    if hinshi == "名詞" and word in noundict.keys():
-      noundict[word] += 1
+    if hinshi == "名詞" and word in dfdict.keys():
+      dfdict[word] += 1
     elif hinshi == "名詞" and len(word) != 1 and word not in stopwords:
-      noundict[word] = 1
+      dfdict[word] = 1
     else:
       pass
     node = node.next
-  # noundict = sorted(noundict.items(), key = lambda x:x[1], reverse=True)
-  return noundict, cutwords
+  # dfdict = sorted(dfdict.items(), key = lambda x:x[1], reverse=True)
+  return dfdict, cutwords
