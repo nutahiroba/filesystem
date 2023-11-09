@@ -96,7 +96,7 @@ def getcount(path, words):
     if hinshi == "名詞" and word not in stopwords:
       cutwords.append(word)
 
-    if hinshi == "名詞" and word in noundict.keys():
+    if word in noundict.keys():
       noundict[word] += 1
     elif hinshi == "名詞" and len(word) != 1 and word not in stopwords:
       noundict[word] = 1
