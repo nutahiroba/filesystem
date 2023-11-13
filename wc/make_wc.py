@@ -13,7 +13,7 @@ def get(words, para):
         width=para.width,
         height=para.height,
         # font_stepが動作しない
-        # font_step = 25,
+        font_step = 7,
         min_font_size=para.min,
     )
 
