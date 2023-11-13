@@ -1,24 +1,57 @@
 from flask import Flask, render_template, request, jsonify
 import pathlib
 from flask_sqlalchemy import SQLAlchemy
-from .wc import main
+from wc import main
 
-app = Flask(__name__, static_folder = '.', static_url_path = '')
 
-p = pathlib.Path(r"C:\Users\nutta\OneDrive\ドキュメント\授業資料")
-dfdict = main.wc(p)
+class Parameter:
+    def __init__(self, color, width, height, min):
+        self.color = color
+        self.width = width
+        self.height = height
+        self.min = min
 
-docs_list = p.glob("*.docx")
-file_list = []
 
-for doc in docs_list:
-    file_list.append(str(doc).split("\\")[-1])
+app = Flask(__name__, static_folder=".", static_url_path="")
+app.config["SQLALCHEMY_ECHO"] = False
 
-recorded_text_list = []
+# p = pathlib.Path(r"C:\Users\nutta\OneDrive\ドキュメント\授業資料")
+# dfdict = main.makeDB(p)
 
-@app.route('/')
+# docs_list = p.glob("*.docx")
+# file_list = []
+
+# for doc in docs_list:
+#     file_list.append(str(doc).split("\\")[-1])
+
+# recorded_text_list = []
+
+
+@app.route("/")
 def index():
-    return render_template("wc.html")
+    para = Parameter(color="jet", width=600, height=600, min=15)
+    wc = main.makeWC(para)
+    return render_template("wc.html", data=wc)
+    # return render_template("gen_wc.html")
+
+
+@app.route("/generate", methods=["POST"])
+def generate():
+    color = request.form.get("color")
+    height = request.form.get("height")
+    width = request.form.get("width")
+    min = request.form.get("min")
+    # color, width, height, min
+    para = Parameter(
+        color=color,
+        width=int(width),
+        height=int(height),
+        min=int(min),
+    )
+    wc = main.makeWC(para)
+
+    return jsonify({"items": wc})
+
 
 # @app.route('/sendpath', method = ["POST"]:)
 # def send_Path():
@@ -26,21 +59,14 @@ def index():
 #     file_path = data.get('folderPaths', [])
 #     print(file_path)
 
-@app.route('/sendList', methods=['POST'])
+
+@app.route("/sendList", methods=["POST"])
 def send_list():
     data = request.get_json()
-    received_text_list = data.get('recordedTexts', [])
-    tmp = []
-    for file in file_list:
-        if all(word in file for word in received_text_list):
-            tmp.append(file)
+    received_words = data.get("recordedTexts", [])
+    result_files = main.check(received_words)
+    return jsonify({"items": result_files})
 
-    if len(tmp) == 0:
-        json_data = {"items":"undified"}
-    else:
-        json_data = {"items": tmp}
 
-    return jsonify(json_data)
-
-if __name__ == '__main__':
-    app.run(port = 8000, debug=True)
+if __name__ == "__main__":
+    app.run(port=8000, debug=True)
