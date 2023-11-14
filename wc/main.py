@@ -122,7 +122,7 @@ def makeDB(path):
 
     with open("dfdict.json", "w", encoding="utf-8") as f:
         json.dump(all_dfdict, f, ensure_ascii=False)
-        
+
     with open("allwords_infile.json", "w", encoding="utf-8") as f:
         json.dump(allwords_infile, f, ensure_ascii=False)
 
@@ -158,10 +158,11 @@ def row_to_dict(row):
 
 def check(words):
     row_files = database.getval(words)
-    result_files = []
-    for row in row_files:
-        tmp = str(row)[2:-3]
-        result_files.append(tmp)
+    result_files = {}
+    for file in row_files:
+        tmp = str(file.path)[2:-3]
+        words_val = [file.cutwords, file.dfdict]
+        result_files[tmp] = file.cutwords.replace("'", "").replace(" ", "")[1:-1]
     return result_files
 
 

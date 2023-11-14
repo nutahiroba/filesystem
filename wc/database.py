@@ -91,8 +91,8 @@ def genid(length=8):
 def regtodb(path, cutwords, dfdict):
     path_str = str(path)
     # 辞書オブジェクトを文字列に変換
-    dfdict_str = converttostr(dfdict)
-    cutwords_str = converttostr(cutwords)
+    dfdict_str = str(dfdict)
+    cutwords_str = str(cutwords)
     id = genid()
     # DBに登録
     file = Files(id=id, path=path_str, cutwords=cutwords_str, dfdict=dfdict_str)
@@ -141,13 +141,13 @@ def makedb(path):
             pass
         node = node.next
     # dfdict = sorted(dfdict.items(), key = lambda x:x[1], reverse=True)
-    regtodb(path, dfdict, cutwords)
+    regtodb(path, cutwords, dfdict)
     return dfdict, cutwords, words_infile
 
 
 def getval(words):
     result = (
-        session.query(Files.path)
+        session.query(Files)
         .filter(*[Files.cutwords.contains(word) for word in words])
         .all()
     )

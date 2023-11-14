@@ -13,7 +13,6 @@ document
       .then((response) => response.json())
       .then((data) => {
         // ここでレスポンスデータを処理します
-        console.log(data);
         const wc = data.items;
         const wcdisplay = document.getElementById("wordcloud");
 
@@ -119,8 +118,6 @@ document
               textElement.parentNode.insertBefore(rect, textElement);
             });
 
-            console.log(recordedTexts);
-
             fetch("/sendList", {
               method: "POST",
               headers: {
@@ -138,8 +135,8 @@ document
               })
               // -------------------------受け取った値の処理--------------------------
               .then((data) => {
-                const fileList = data.items;
-                console.log(fileList);
+                const fileData = data.items;
+                let fileList = Object.keys(fileData);
                 const filecount = document.getElementById("file_count");
                 filecount.textContent = fileList.length + "件";
 
@@ -148,12 +145,43 @@ document
                 if (fileList == "undified") {
                   filedisplay.innerHTML = "<p>対象無し</p>";
                 } else {
-                  fileList.unshift("ファイル名");
+                  // fileList.unshift("ファイル名");
+
+                  const row = document.createElement("tr");
+                  const cell0 = document.createElement("td");
+                  cell0.textContent = "ファイル名";
+                  row.appendChild(cell0);
+
+                  recordedTexts.forEach((text) => {
+                    const cell0 = document.createElement("td");
+                    cell0.textContent = text;
+                    row.appendChild(cell0);
+                  });
+
+                  filedisplay.appendChild(row);
+
                   fileList.forEach((item) => {
+                    // 列を作成
                     const row = document.createElement("tr");
-                    const cell = document.createElement("td");
-                    cell.textContent = item.split("\\").pop();
-                    row.appendChild(cell);
+
+                    // ファイル名を表示
+                    const cell1 = document.createElement("td");
+                    cell1.textContent = item.split("\\").pop();
+                    row.appendChild(cell1);
+
+                    // 単語を表示
+                    recordedTexts.forEach((text) => {
+                      const cell2 = document.createElement("td");
+                      wordsarray = fileData[item].split(",");
+                      let counts = wordsarray.reduce((countMap, word) => {
+                        countMap[word] = (countMap[word] || 0) + 1;
+                        return countMap;
+                      }, {});
+                      cell2.textContent = counts[text];
+
+                      row.appendChild(cell2);
+                    });
+
                     filedisplay.appendChild(row);
                   });
                 }
