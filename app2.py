@@ -30,6 +30,8 @@ app.config["SQLALCHEMY_ECHO"] = False
 @app.route("/")
 def index():
     para = Parameter(color="jet", width=600, height=600, min=15)
+    path = "C:\\Users\\nutta\\OneDrive\\ドキュメント\\授業資料"
+    main.makeDB(path)
     wc = main.makeWC(para)
     return render_template("wc.html", data=wc)
     # return render_template("gen_wc.html")

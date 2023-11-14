@@ -81,7 +81,8 @@ def convert_to_json_serializable(obj, memo=None):
     return obj
 
 
-def makeDB(folder_path):
+def makeDB(path):
+    folder_path = pathlib.Path(path)
     # フォルダの指定
     file_list = folder_path.glob("*.docx")
 
@@ -93,6 +94,12 @@ def makeDB(folder_path):
     except FileNotFoundError:
         all_dfdict = {}
 
+    try:
+        with open("allwords_infile.json", "r", encoding="utf-8") as f:
+            allwords_infile = json.load(f)
+    except FileNotFoundError:
+        allwords_infile = {}
+
     for path in file_list:
         # メタデータを取得
         metadata = PathtoMeta(path)
@@ -103,9 +110,10 @@ def makeDB(folder_path):
         if dbval is None:
             continue
         else:
-            dfdict, cutwords = dbval
+            dfdict, cutwords, words_infile = dbval
             # フォルダ全体の単語リスト
             all_dfdict.update(dfdict)
+            allwords_infile.update(words_infile)
 
             # 単語リスト
             cutwordslist.append(" ".join(cutwords))
@@ -114,6 +122,9 @@ def makeDB(folder_path):
 
     with open("dfdict.json", "w", encoding="utf-8") as f:
         json.dump(all_dfdict, f, ensure_ascii=False)
+        
+    with open("allwords_infile.json", "w", encoding="utf-8") as f:
+        json.dump(allwords_infile, f, ensure_ascii=False)
 
     return cutwordslist
 
@@ -128,7 +139,13 @@ def makeWC(para):
     except FileNotFoundError:
         all_dfdict = {}
 
-    wc = make_wc.get(all_dfdict, para)
+    try:
+        with open("allwords_infile.json", "r", encoding="utf-8") as f:
+            allwords_infile = json.load(f)
+    except:
+        allwords_infile = {}
+
+    wc = make_wc.get(allwords_infile, para)
     return wc.to_svg()
 
     # file_path = "templates\wc3.html"

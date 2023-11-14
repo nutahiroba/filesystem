@@ -117,6 +117,7 @@ def makedb(path):
     tagger = MeCab.Tagger()
     cutwords = []
     dfdict = {}
+    words_infile = {}
     node = tagger.parseToNode(words)
     while node:
         word = node.surface
@@ -124,21 +125,24 @@ def makedb(path):
         if hinshi == "名詞" and word not in stopwords:
             cutwords.append(word)
 
+        # dfではなく、ファイルの単語の有無を確認している
         if word in dfdict.keys():
             dfdict[word] += 1
-        elif (
+            pass
+        if (
             hinshi == "名詞"
             and len(word) != 1
             and word not in stopwords
             and pattern.match(word) is None
         ):
             dfdict[word] = 1
+            words_infile[word] = 1
         else:
             pass
         node = node.next
     # dfdict = sorted(dfdict.items(), key = lambda x:x[1], reverse=True)
     regtodb(path, dfdict, cutwords)
-    return dfdict, cutwords
+    return dfdict, cutwords, words_infile
 
 
 def getval(words):
@@ -170,7 +174,8 @@ def raw_getcount(words):
             cutwords.append(word)
 
         if hinshi == "名詞" and word in dfdict.keys():
-            dfdict[word] += 1
+            # dfdict[word] += 1
+            pass
         elif hinshi == "名詞" and len(word) != 1 and word not in stopwords:
             dfdict[word] = 1
         else:
