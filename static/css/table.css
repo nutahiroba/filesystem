@@ -1,13 +1,15 @@
-
 table {
   border-collapse: collapse;
   width: 80%;
   margin: 20px auto;
 }
-table, th, td {
+table,
+th,
+td {
   border: 2px solid #333;
 }
-th, td {
+th,
+td {
   padding: 10px;
   text-align: left;
 }
@@ -21,4 +23,7 @@ tr:nth-child(even) {
 }
 tr:hover {
   background-color: #ddd;
+}
+#selectArea {
+  display: flex;
 }

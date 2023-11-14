@@ -73,7 +73,6 @@ def generate():
 def send_list():
     data = request.get_json()
     received_words = data.get("recordedTexts", [])
-    print(received_words)
     result_files = main.check(received_words)
     return jsonify({"items": result_files})
 
