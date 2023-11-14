@@ -5,11 +5,13 @@ from wc import main
 
 
 class Parameter:
-    def __init__(self, color, width, height, min):
+    def __init__(self, color, width, height, min, max, step):
         self.color = color
         self.width = width
         self.height = height
         self.min = min
+        self.max = max
+        self.step = step
 
 
 app = Flask(__name__, static_folder=".", static_url_path="")
@@ -29,12 +31,13 @@ app.config["SQLALCHEMY_ECHO"] = False
 
 @app.route("/")
 def index():
-    para = Parameter(color="jet", width=600, height=600, min=15)
+    # para = Parameter(color="jet", width=600, height=600, min=15)
     path = "C:\\Users\\nutta\\OneDrive\\ドキュメント\\授業資料"
     main.makeDB(path)
-    wc = main.makeWC(para)
-    return render_template("wc.html", data=wc)
-    # return render_template("gen_wc.html")
+    # wc = main.makeWC(para)
+    # return render_template("wc.html", data=wc)
+
+    return render_template("gen_wc.html")
 
 
 @app.route("/generate", methods=["POST"])
@@ -43,12 +46,16 @@ def generate():
     height = request.form.get("height")
     width = request.form.get("width")
     min = request.form.get("min")
+    max = request.form.get("max")
+    step = request.form.get("step")
     # color, width, height, min
     para = Parameter(
         color=color,
         width=int(width),
         height=int(height),
         min=int(min),
+        max=int(max),
+        step=int(step),
     )
     wc = main.makeWC(para)
 
@@ -66,6 +73,7 @@ def generate():
 def send_list():
     data = request.get_json()
     received_words = data.get("recordedTexts", [])
+    print(received_words)
     result_files = main.check(received_words)
     return jsonify({"items": result_files})
 

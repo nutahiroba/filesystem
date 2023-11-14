@@ -3,6 +3,7 @@ from wordcloud import WordCloud
 
 
 def get(words, para):
+    # print(para.color, para.width, para.height, para.step, para.min, para.max)
     wc = WordCloud(
         font_path="C:\Windows\Fonts\yumin.ttf",
         prefer_horizontal=1,
@@ -12,9 +13,9 @@ def get(words, para):
         colormap=para.color,
         width=para.width,
         height=para.height,
-        # font_stepが動作しない
-        font_step=7,
+        font_step=para.step,
         min_font_size=para.min,
+        max_font_size=para.max,
     )
 
     if type(words) == dict:
