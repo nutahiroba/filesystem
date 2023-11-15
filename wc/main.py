@@ -89,16 +89,16 @@ def makeDB(path):
     # wordshash = []
     cutwordslist = []
     try:
-        with open("dfdict.json", "r", encoding="utf-8") as f:
-            all_dfdict = json.load(f)
+        with open("tfdict.json", "r", encoding="utf-8") as f:
+            all_tfdict = json.load(f)
     except FileNotFoundError:
-        all_dfdict = {}
+        all_tfdict = {}
 
     try:
-        with open("allwords_infile.json", "r", encoding="utf-8") as f:
-            allwords_infile = json.load(f)
+        with open("dfdict.json", "r", encoding="utf-8") as f:
+            dfdict = json.load(f)
     except FileNotFoundError:
-        allwords_infile = {}
+        dfdict = {}
 
     for path in file_list:
         # メタデータを取得
@@ -110,42 +110,51 @@ def makeDB(path):
         if dbval is None:
             continue
         else:
-            dfdict, cutwords, words_infile = dbval
+            tfdict, cutwords, words_infile = dbval
             # フォルダ全体の単語リスト
-            all_dfdict.update(dfdict)
-            allwords_infile.update(words_infile)
+            for tf in tfdict:
+                if tf in all_tfdict:
+                    all_tfdict[tf] += tfdict[tf]
+                else:
+                    all_tfdict[tf] = tfdict[tf]
+            
+            for word in words_infile:
+                if word in dfdict:
+                    dfdict[word] += words_infile[word]
+                else:
+                    dfdict[word] = words_infile[word]
 
             # 単語リスト
             cutwordslist.append(" ".join(cutwords))
 
-            # json_string = json.dumps(all_dfdict, default=convert_to_json_serializable)
+            # json_string = json.dumps(all_tfdict, default=convert_to_json_serializable)
+
+    with open("tfdict.json", "w", encoding="utf-8") as f:
+        json.dump(all_tfdict, f, ensure_ascii=False)
 
     with open("dfdict.json", "w", encoding="utf-8") as f:
-        json.dump(all_dfdict, f, ensure_ascii=False)
-
-    with open("allwords_infile.json", "w", encoding="utf-8") as f:
-        json.dump(allwords_infile, f, ensure_ascii=False)
+        json.dump(dfdict, f, ensure_ascii=False)
 
     return cutwordslist
 
     # 動かんからパス
-    # tfidfdict = tfidf.getvalues(cutwordslist)
+    # tfitfdict = tfidf.getvalues(cutwordslist)
 
 
 def makeWC(para):
     try:
-        with open("dfdict.json", "r", encoding="utf-8") as f:
-            all_dfdict = json.load(f)
+        with open("tfdict.json", "r", encoding="utf-8") as f:
+            all_tfdict = json.load(f)
     except FileNotFoundError:
-        all_dfdict = {}
+        all_tfdict = {}
 
     try:
-        with open("allwords_infile.json", "r", encoding="utf-8") as f:
-            allwords_infile = json.load(f)
+        with open("dfdict.json", "r", encoding="utf-8") as f:
+            dfdict = json.load(f)
     except:
-        allwords_infile = {}
+        dfdict = {}
 
-    wc = make_wc.get(allwords_infile, para)
+    wc = make_wc.get(dfdict, para)
     return wc.to_svg()
 
     # file_path = "templates\wc3.html"
@@ -161,7 +170,7 @@ def check(words):
     result_files = {}
     for file in row_files:
         tmp = str(file.path)[2:-3]
-        words_val = [file.cutwords, file.dfdict]
+        words_val = [file.cutwords, file.tfdict]
         result_files[tmp] = file.cutwords.replace("'", "").replace(" ", "")[1:-1]
     return result_files
 

@@ -24,17 +24,17 @@ class Files(Base):
     __tablename__ = "files"
     id = Column(String, primary_key=True)
     path = Column(String, unique=True)
-    cutwords = Column(String)
-    dfdict = Column(String)
+    cutwords = Column(String, unique=True)
+    tfdict = Column(String)
 
-    def __init__(self, id, path, cutwords, dfdict):
+    def __init__(self, id, path, cutwords, tfdict):
         self.id = id
         self.path = path
         self.cutwords = cutwords
-        self.dfdict = dfdict
+        self.tfdict = tfdict
 
     def __str__(self):
-        return f"id:{self.id},path:{self.path},cutwords:{self.cutwords},dfdict:{self.dfdict}"
+        return f"id:{self.id},path:{self.path},cutwords:{self.cutwords},tfdict:{self.tfdict}"
 
 
 Base.metadata.create_all(engine)
@@ -76,7 +76,7 @@ def dbgetfile(path):
     path = str(path)
     file = session.query(Files).filter(Files.path == path).first()
     if file is not None:
-        return file.cutwords, file.dfdict
+        return file.cutwords, file.tfdict
     else:
         print("404 指定されたパスのドキュメントが見つかりませんでした")
         return None
@@ -88,16 +88,42 @@ def genid(length=8):
     return random_id
 
 
-def regtodb(path, cutwords, dfdict):
+def regtodb(path, cutwords, tfdict):
     path_str = str(path)
     # 辞書オブジェクトを文字列に変換
-    dfdict_str = str(dfdict)
-    cutwords_str = str(cutwords)
+    tfdict_str = str(tfdict).replace(" ", "").replace("'", "")
+    cutwords_str = str(cutwords).replace(" ", "").replace("'", "")
     id = genid()
     # DBに登録
-    file = Files(id=id, path=path_str, cutwords=cutwords_str, dfdict=dfdict_str)
+    file = Files(id=id, path=path_str, cutwords=cutwords_str, tfdict=tfdict_str)
     session.add(file)
     session.commit()
+
+
+def getval(words):
+    result = (
+        session.query(Files)
+        .filter(*[Files.cutwords.contains(word) for word in words])
+        .all()
+    )
+    return result
+
+
+def get_allfiles():
+    result = session.query(Files).all()
+    return result
+
+
+def is_new(cutwords):
+    if (
+        session.query(Files)
+        .filter(Files.cutwords == str(cutwords).replace(" ", "").replace("'", ""))
+        .count()
+        == 0
+    ):
+        return True
+    else:
+        return False
 
 
 def makedb(path):
@@ -113,10 +139,12 @@ def makedb(path):
 
     # 文字列取得
     words = PathtoTxt(path)
+    if words == "":
+        return None
 
     tagger = MeCab.Tagger()
     cutwords = []
-    dfdict = {}
+    tfdict = {}
     words_infile = {}
     node = tagger.parseToNode(words)
     while node:
@@ -126,32 +154,26 @@ def makedb(path):
             cutwords.append(word)
 
         # dfではなく、ファイルの単語の有無を確認している
-        if word in dfdict.keys():
-            dfdict[word] += 1
+        if word in tfdict.keys():
+            tfdict[word] += 1
             pass
-        if (
+        elif (
             hinshi == "名詞"
             and len(word) != 1
             and word not in stopwords
             and pattern.match(word) is None
         ):
-            dfdict[word] = 1
+            tfdict[word] = 1
             words_infile[word] = 1
         else:
             pass
         node = node.next
-    # dfdict = sorted(dfdict.items(), key = lambda x:x[1], reverse=True)
-    regtodb(path, cutwords, dfdict)
-    return dfdict, cutwords, words_infile
-
-
-def getval(words):
-    result = (
-        session.query(Files)
-        .filter(*[Files.cutwords.contains(word) for word in words])
-        .all()
-    )
-    return result
+    # tfdict = sorted(tfdict.items(), key = lambda x:x[1], reverse=True)
+    if is_new(cutwords):
+        regtodb(path, cutwords, tfdict)
+    else:
+        return None
+    return tfdict, cutwords, words_infile
 
 
 # DBに依存しないタイプ
@@ -165,7 +187,7 @@ def raw_getcount(words):
         stopwords = f.readlines()
     stopwords = [string.strip() for string in stopwords if string.strip()]
 
-    dfdict = {}
+    tfdict = {}
     node = tagger.parseToNode(words)
     while node:
         word = node.surface
@@ -173,13 +195,13 @@ def raw_getcount(words):
         if hinshi == "名詞" and word not in stopwords:
             cutwords.append(word)
 
-        if hinshi == "名詞" and word in dfdict.keys():
-            # dfdict[word] += 1
+        if hinshi == "名詞" and word in tfdict.keys():
+            # tfdict[word] += 1
             pass
         elif hinshi == "名詞" and len(word) != 1 and word not in stopwords:
-            dfdict[word] = 1
+            tfdict[word] = 1
         else:
             pass
         node = node.next
-    # dfdict = sorted(dfdict.items(), key = lambda x:x[1], reverse=True)
-    return dfdict, cutwords
+    # tfdict = sorted(tfdict.items(), key = lambda x:x[1], reverse=True)
+    return tfdict, cutwords
