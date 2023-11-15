@@ -38,12 +38,12 @@ def getvalues(cutwordslist):
 
 
 # tdidvectorizerを使用しないバージョン
-import database
+from wc import database
 import json
 
 
 # tf値を算出
-def str_to_tfdict(file):
+def calc_tfdict(file):
     tfs = file.tfdict[1:-1].split(",")
     doc = {}
     for tf in tfs:
@@ -61,13 +61,32 @@ def calc_tfidf():
     files = database.get_allfiles()
     tfs = {}
     for file in files:
-        tfs[file.path] = str_to_tfdict(file)
+        tfs[file.path] = calc_tfdict(file)
+
+    idf = {}
     with open("dfdict.json", "r", encoding="utf-8") as f:
         dfdict = json.load(f)
-        idf = {}
         for word in dfdict.keys():
             idf[word] = np.log((len(files) / dfdict[word]) + 1)
-    return tfs, idf
+
+    tfidf = {}
+    # for path in tfs.keys():
+    #     tfidf[path] = {}
+    #     for word in tfs[path].keys():
+    #         tfidf[path][word] = tfs[path][word] * idf[word]
+    for word in idf.keys():
+        tfidf[word] = {}
+        for path in tfs.keys():
+            if word in tfs[path].keys():
+                tfidf[word][path] = tfs[path][word] * idf[word]
+            else:
+                continue
+    with open("tfidfdict.json", "w", encoding="utf-8") as f:
+        json.dump(tfidf, f, ensure_ascii=False)
+    return tfidf
 
 
-calc_tfidf()
+# print(calc_tfidf()["議長"])
+
+# for path, value in calc_tfidf()["議長"].items():
+#     print(path, value)

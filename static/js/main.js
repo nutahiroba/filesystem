@@ -172,12 +172,14 @@ document
                     // 単語を表示
                     recordedTexts.forEach((text) => {
                       const cell2 = document.createElement("td");
-                      wordsarray = fileData[item].split(",");
-                      let counts = wordsarray.reduce((countMap, word) => {
-                        countMap[word] = (countMap[word] || 0) + 1;
-                        return countMap;
-                      }, {});
-                      cell2.textContent = counts[text];
+                      // cutwordを渡したときに単語の数を数える
+                      // wordsarray = fileData[item].split(",");
+                      // let counts = wordsarray.reduce((countMap, word) => {
+                      //   countMap[word] = (countMap[word] || 0) + 1;
+                      //   return countMap;
+                      // }, {});
+                      // cell2.textContent = counts[text];
+                      cell2.textContent = fileData[item][text];
 
                       row.appendChild(cell2);
                     });

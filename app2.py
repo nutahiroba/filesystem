@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import pathlib
 from flask_sqlalchemy import SQLAlchemy
-from wc import main
+from wc import main, tfidf
 
 
 class Parameter:
@@ -34,6 +34,7 @@ def index():
     # para = Parameter(color="jet", width=600, height=600, min=15)
     path = "C:\\Users\\nutta\\OneDrive\\ドキュメント\\授業資料"
     main.makeDB(path)
+    tfidf.calc_tfidf()
     # wc = main.makeWC(para)
     # return render_template("wc.html", data=wc)
 
@@ -73,7 +74,9 @@ def generate():
 def send_list():
     data = request.get_json()
     received_words = data.get("recordedTexts", [])
-    result_files = main.check(received_words)
+    match_files = main.check(received_words)
+    result_files = main.getfiles(received_words, match_files)
+    print(result_files)
     return jsonify({"items": result_files})
 
 

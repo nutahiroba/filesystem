@@ -117,7 +117,7 @@ def makeDB(path):
                     all_tfdict[tf] += tfdict[tf]
                 else:
                     all_tfdict[tf] = tfdict[tf]
-            
+
             for word in words_infile:
                 if word in dfdict:
                     dfdict[word] += words_infile[word]
@@ -169,9 +169,21 @@ def check(words):
     row_files = database.getval(words)
     result_files = {}
     for file in row_files:
-        tmp = str(file.path)[2:-3]
+        tmp = str(file.path)
         words_val = [file.cutwords, file.tfdict]
         result_files[tmp] = file.cutwords.replace("'", "").replace(" ", "")[1:-1]
+    return result_files
+
+
+def getfiles(received_words, match_files):
+    with open("tfidfdict.json", "r", encoding="utf-8") as f:
+        tfidfdict = json.load(f)
+    result_files = {}
+    for file in match_files:
+        tmp = {}
+        for word in received_words:
+            tmp[word] = tfidfdict[word][file]
+            result_files[file] = tmp
     return result_files
 
 
