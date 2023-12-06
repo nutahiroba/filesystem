@@ -9,3 +9,5 @@ __pycache__/
 *.jpg
 test.py
 test4.py
+*.json
+*.db

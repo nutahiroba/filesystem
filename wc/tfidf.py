@@ -47,6 +47,8 @@ def calc_tfdict(file):
     tfs = file.tfdict[1:-1].split(",")
     doc = {}
     for tf in tfs:
+        if tf == "":
+            continue
         word, count = tf.split(":")
         count = int(count)
         doc[word] = count

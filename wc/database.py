@@ -9,7 +9,7 @@ from pprint import pprint
 import docx
 import hashlib
 import re
-
+# from wc import title_model
 
 engine = create_engine("sqlite:///words.db", echo=False)
 Base = declarative_base()
@@ -24,17 +24,20 @@ class Files(Base):
     __tablename__ = "files"
     id = Column(String, primary_key=True)
     path = Column(String, unique=True)
+    # title = Column(String)
     cutwords = Column(String, unique=True)
     tfdict = Column(String)
 
     def __init__(self, id, path, cutwords, tfdict):
         self.id = id
         self.path = path
+        # self.title = title
         self.cutwords = cutwords
         self.tfdict = tfdict
 
     def __str__(self):
         return f"id:{self.id},path:{self.path},cutwords:{self.cutwords},tfdict:{self.tfdict}"
+        # return f"id:{self.id},path:{self.path},title:{self.title},cutwords:{self.cutwords},tfdict:{self.tfdict}"
 
 
 Base.metadata.create_all(engine)
@@ -93,9 +96,16 @@ def regtodb(path, cutwords, tfdict):
     # 辞書オブジェクトを文字列に変換
     tfdict_str = str(tfdict).replace(" ", "").replace("'", "")
     cutwords_str = str(cutwords).replace(" ", "").replace("'", "")
+    # title_str = str(title).replace(" ", "").replace("'", "")
     id = genid()
     # DBに登録
-    file = Files(id=id, path=path_str, cutwords=cutwords_str, tfdict=tfdict_str)
+    file = Files(
+        id=id,
+        path=path_str,
+        # title=title_str,
+        cutwords=cutwords_str,
+        tfdict=tfdict_str,
+    )
     session.add(file)
     session.commit()
 
@@ -126,6 +136,9 @@ def is_new(cutwords):
         return False
 
 
+output_words = "名詞"
+
+
 def makedb(path):
     # dbfile = dbgetfile(path)
     if ispath_exists(path):
@@ -139,6 +152,7 @@ def makedb(path):
 
     # 文字列取得
     words = PathtoTxt(path)
+    # title = title_model.get_title(words)
     if words == "":
         return None
 
@@ -150,7 +164,7 @@ def makedb(path):
     while node:
         word = node.surface
         hinshi = node.feature.split(",")[0]
-        if hinshi == "名詞" and word not in stopwords:
+        if hinshi == output_words and word not in stopwords:
             cutwords.append(word)
 
         # dfではなく、ファイルの単語の有無を確認している
@@ -158,7 +172,7 @@ def makedb(path):
             tfdict[word] += 1
             pass
         elif (
-            hinshi == "名詞"
+            hinshi == output_words
             and len(word) != 1
             and word not in stopwords
             and pattern.match(word) is None

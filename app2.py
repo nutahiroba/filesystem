@@ -58,6 +58,7 @@ def generate():
         max=int(max),
         step=int(step),
     )
+    
     wc = main.makeWC(para)
 
     return jsonify({"items": wc})

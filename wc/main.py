@@ -154,7 +154,10 @@ def makeWC(para):
     except:
         dfdict = {}
 
-    wc = make_wc.get(dfdict, para)
+    # wc = make_wc.get(dfdict, para)
+    
+    wc = make_wc.get(all_tfdict, para)
+    
     return wc.to_svg()
 
     # file_path = "templates\wc3.html"
