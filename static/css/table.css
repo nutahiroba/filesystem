@@ -26,6 +26,5 @@ tr:hover {
 }
 #selectArea {
   display: flex;
-  flex-direction: row;
 }
 
