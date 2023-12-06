@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>フォルダパスアップロード</title>
+</head>
+<body>
+    <h1>フォルダパスアップロード</h1>
+    <form>
+        <label for="folderPaths">フォルダを選択してください:</label>
+        <input type="file" id="folderPaths" webkitdirectory directory multiple />
+        <button type="button" id="uploadButton">アップロード</button>
+    </form>
+    <div id="message"></div>
+
+    <script>
+        document.getElementById('uploadButton').addEventListener('click', function() {
+            const folderInputs = document.getElementById('folderPaths').files;
+            const folderPaths = Array.from(folderInputs).map(file => file.webkitRelativePath);
+
+            // フォルダパスをPOSTする
+            fetch('/sendpath', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ folderPaths}),
+            })
+            .then((response) => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    return 'フォルダパスのPOSTに失敗しました';
+                }
+            })
+            .then((data) => {
+                document.getElementById('message').textContent = data;
+            })
+            .catch((error) => {
+                console.error('エラー: ' + error);
+            });
+        });
+    </script>
+</body>
+</html>

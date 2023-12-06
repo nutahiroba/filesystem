@@ -4,10 +4,10 @@ __pycache__/
 *.txt
 !Japanese.txt
 !stopword.txt
-*.html
 *.svg
 *.jpg
 test.py
 test4.py
 *.json
 *.db
+lib/

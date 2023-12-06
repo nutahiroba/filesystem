@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Text Click Post</title>
+    <link rel="stylesheet" href="..\static\css\table.css" />
+  </head>
+
+  <body>
+    <div style="display: flex">
+      <div id="wc_display"></div>
+      <div id="file_list"></div>
+    </div>
+    <script>
+      // JSONデータをJavaScriptオブジェクトに変換する
+      const wordCloudData = JSON.parse(`{{ data | tojson | safe }}`);
+
+      // サーバーからのレスポンスがSVGデータを含むことを期待している場合
+      document.getElementById("wc_display").innerHTML = wordCloudData.svg;
+
+      // 他のJSONデータを処理する場合の例
+      if (wordCloudData.files) {
+        const fileListElement = document.getElementById("file_list");
+        wordCloudData.files.forEach((file) => {
+          const listItem = document.createElement("li");
+          listItem.textContent = file.name; // 'name' はファイル名を表すプロパティ名
+          fileListElement.appendChild(listItem);
+        });
+      }
+    </script>
+  </body>
+</html>

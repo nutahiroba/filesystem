@@ -9,6 +9,7 @@ from pprint import pprint
 import docx
 import hashlib
 import re
+
 # from wc import title_model
 
 engine = create_engine("sqlite:///words.db", echo=False)
@@ -136,7 +137,7 @@ def is_new(cutwords):
         return False
 
 
-output_words = "名詞"
+output_words = "固有名詞"
 
 
 def makedb(path):
@@ -163,7 +164,7 @@ def makedb(path):
     node = tagger.parseToNode(words)
     while node:
         word = node.surface
-        hinshi = node.feature.split(",")[0]
+        hinshi = node.feature.split(",")[1]
         if hinshi == output_words and word not in stopwords:
             cutwords.append(word)
 
@@ -191,31 +192,31 @@ def makedb(path):
 
 
 # DBに依存しないタイプ
-def raw_getcount(words):
-    tagger = MeCab.Tagger()
-    cutwords = []
+# def raw_getcount(words):
+#     tagger = MeCab.Tagger()
+#     cutwords = []
 
-    with open(
-        r"C:\Users\nutta\myProject\FileSystem\wc\stopword.txt", "r", encoding="utf-8"
-    ) as f:
-        stopwords = f.readlines()
-    stopwords = [string.strip() for string in stopwords if string.strip()]
+#     with open(
+#         r"C:\Users\nutta\myProject\FileSystem\wc\stopword.txt", "r", encoding="utf-8"
+#     ) as f:
+#         stopwords = f.readlines()
+#     stopwords = [string.strip() for string in stopwords if string.strip()]
 
-    tfdict = {}
-    node = tagger.parseToNode(words)
-    while node:
-        word = node.surface
-        hinshi = node.feature.split(",")[0]
-        if hinshi == "名詞" and word not in stopwords:
-            cutwords.append(word)
+#     tfdict = {}
+#     node = tagger.parseToNode(words)
+#     while node:
+#         word = node.surface
+#         hinshi = node.feature.split(",")[0]
+#         if hinshi == "名詞" and word not in stopwords:
+#             cutwords.append(word)
 
-        if hinshi == "名詞" and word in tfdict.keys():
-            # tfdict[word] += 1
-            pass
-        elif hinshi == "名詞" and len(word) != 1 and word not in stopwords:
-            tfdict[word] = 1
-        else:
-            pass
-        node = node.next
-    # tfdict = sorted(tfdict.items(), key = lambda x:x[1], reverse=True)
-    return tfdict, cutwords
+#         if hinshi == "名詞" and word in tfdict.keys():
+#             # tfdict[word] += 1
+#             pass
+#         elif hinshi == "名詞" and len(word) != 1 and word not in stopwords:
+#             tfdict[word] = 1
+#         else:
+#             pass
+#         node = node.next
+#     # tfdict = sorted(tfdict.items(), key = lambda x:x[1], reverse=True)
+#     return tfdict, cutwords
