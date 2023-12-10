@@ -137,7 +137,8 @@ def is_new(cutwords):
         return False
 
 
-output_words = "固有名詞"
+# 固有名詞、一般、サ変動詞
+output_words = "名詞"
 
 
 def words_split(words):
@@ -177,7 +178,7 @@ def makedb(path):
     # node = words_split(words)
     while node:
         word = node.surface
-        hinshi = node.feature.split(",")[1]
+        hinshi = node.feature.split(",")[0]
         if hinshi == output_words and word not in stopwords:
             cutwords.append(word)
         # dfではなく、ファイルの単語の有無を確認している

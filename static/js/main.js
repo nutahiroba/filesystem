@@ -101,7 +101,7 @@ document
 
             recordedTexts.forEach((text) => {
               const textElement = document.getElementById(text);
-              textElement.style.fill = "red";
+              // textElement.style.fill = "red";
               // 枠の要素を作成
               const bbox = textElement.getBBox();
               const rect = document.createElementNS(
