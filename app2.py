@@ -17,17 +17,6 @@ class Parameter:
 app = Flask(__name__, static_folder=".", static_url_path="")
 app.config["SQLALCHEMY_ECHO"] = False
 
-# p = pathlib.Path(r"C:\Users\nutta\OneDrive\ドキュメント\授業資料")
-# dfdict = main.makeDB(p)
-
-# docs_list = p.glob("*.docx")
-# file_list = []
-
-# for doc in docs_list:
-#     file_list.append(str(doc).split("\\")[-1])
-
-# recorded_text_list = []
-
 
 @app.route("/")
 def index():
@@ -58,7 +47,7 @@ def generate():
         max=int(max),
         step=int(step),
     )
-    
+
     wc = main.makeWC(para)
 
     return jsonify({"items": wc})

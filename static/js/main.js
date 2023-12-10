@@ -23,6 +23,7 @@ document
         const textElements = document.querySelectorAll("text");
 
         textElements.forEach((textElement) => {
+          textElement.style.fill = "black";
           // ------------------transform属性をx,y属性に変更する----------------------
 
           // transform属性の値を取得
@@ -100,6 +101,7 @@ document
 
             recordedTexts.forEach((text) => {
               const textElement = document.getElementById(text);
+              textElement.style.fill = "red";
               // 枠の要素を作成
               const bbox = textElement.getBBox();
               const rect = document.createElementNS(

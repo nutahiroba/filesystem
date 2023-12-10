@@ -1,6 +1,6 @@
 # 文字列の単語数をカウントして辞書とリストを返す
 from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 import MeCab
 import random
@@ -140,6 +140,17 @@ def is_new(cutwords):
 output_words = "固有名詞"
 
 
+def words_split(words):
+    tagger = MeCab.Tagger()
+    node = tagger.parseToNode(words)
+    # print("version:",tagger.version())  # MeCabのバージョン情報
+    # print("dic",tagger.dictionary_info().filename)
+    # while node:
+    # print(node.surface, node.cost)
+    #     node = node.next
+    return node
+
+
 def makedb(path):
     # dbfile = dbgetfile(path)
     if ispath_exists(path):
@@ -156,18 +167,19 @@ def makedb(path):
     # title = title_model.get_title(words)
     if words == "":
         return None
-
-    tagger = MeCab.Tagger()
     cutwords = []
     tfdict = {}
     words_infile = {}
+
+    tagger = MeCab.Tagger()
     node = tagger.parseToNode(words)
+
+    # node = words_split(words)
     while node:
         word = node.surface
         hinshi = node.feature.split(",")[1]
         if hinshi == output_words and word not in stopwords:
             cutwords.append(word)
-
         # dfではなく、ファイルの単語の有無を確認している
         if word in tfdict.keys():
             tfdict[word] += 1
@@ -190,6 +202,8 @@ def makedb(path):
         return None
     return tfdict, cutwords, words_infile
 
+
+# node = words_split("彼女はペンパイナッポーアッポーペンと恋ダンスを踊った。")
 
 # DBに依存しないタイプ
 # def raw_getcount(words):

@@ -27,4 +27,6 @@ tr:hover {
 #selectArea {
   display: flex;
 }
-
+svg text {
+  fill: black;
+}
