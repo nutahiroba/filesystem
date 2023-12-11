@@ -9,6 +9,7 @@ from pprint import pprint
 import docx
 import hashlib
 import re
+import json
 
 # from wc import title_model
 
@@ -137,10 +138,6 @@ def is_new(cutwords):
         return False
 
 
-# 固有名詞、一般、サ変動詞
-output_words = "名詞"
-
-
 def words_split(words):
     tagger = MeCab.Tagger()
     node = tagger.parseToNode(words)
@@ -152,7 +149,88 @@ def words_split(words):
     return node
 
 
-def makedb(path):
+def read_files(path):
+    with open(path, "r", encoding="utf-8") as f:
+        stopwords = f.readlines()
+    stopwords = [string.strip() for string in stopwords if string.strip()]
+    return stopwords
+
+
+def wordtolist(path, word_index):
+    # dbfile = dbgetfile(path)
+    if ispath_exists(path):
+        return None, word_index
+    # 文字列取得
+    words = PathtoTxt(path)
+
+    stopwords = read_files(r"C:\Users\nutta\myProject\FileSystem\wc\stopword.txt")
+
+    if words == "":
+        return None, word_index
+    cutwords = []
+
+    tagger = MeCab.Tagger()
+    node = tagger.parseToNode(words)
+
+    word_type = "名詞"
+
+    while node:
+        word = node.surface
+        hinshi = node.feature.split(",")[0]
+        sub_hinshi = node.feature.split(",")[1]
+
+        if hinshi == word_type and word not in stopwords and len(word) != 1:
+            cutwords.append(word)
+            if sub_hinshi in word_index:
+                word_index[sub_hinshi].append(word)
+            else:
+                word_index[sub_hinshi] = [word]
+
+        node = node.next
+    # tfdict = sorted(tfdict.items(), key = lambda x:x[1], reverse=True)
+    # if is_new(cutwords):
+    #     regtodb(path, cutwords, tfdict)
+    # else:
+    #     return None
+    return cutwords, word_index
+
+
+def regDB(files):
+    all_tfdict = {}
+    all_dfdict = {}
+    word_index = {}
+    for file in files:
+        cutwords, word_index = wordtolist(file, word_index)
+        if cutwords is None:
+            continue
+        else:
+            tfdict = {}
+            dflist = []
+            for word in cutwords:
+                if word not in dflist:
+                    dflist.append(word)
+                    tfdict[word] = cutwords.count(word)
+
+            if is_new(cutwords):
+                regtodb(file, cutwords, tfdict)
+            else:
+                pass
+
+            for word in dflist:
+                if word in all_dfdict.keys():
+                    all_tfdict[word] += tfdict[word]
+                    all_dfdict[word] += 1
+                else:
+                    all_tfdict[word] = tfdict[word]
+                    all_dfdict[word] = 1
+
+    with open("word_index.json", "w", encoding="utf-8") as f:
+        json.dump(word_index, f, ensure_ascii=False)
+
+    return all_dfdict, all_tfdict
+
+
+def pre_makedb(path):
     # dbfile = dbgetfile(path)
     if ispath_exists(path):
         return None
@@ -179,14 +257,14 @@ def makedb(path):
     while node:
         word = node.surface
         hinshi = node.feature.split(",")[0]
-        if hinshi == output_words and word not in stopwords:
+        if hinshi == "名詞" and word not in stopwords:
             cutwords.append(word)
         # dfではなく、ファイルの単語の有無を確認している
         if word in tfdict.keys():
             tfdict[word] += 1
             pass
         elif (
-            hinshi == output_words
+            hinshi == "名詞"
             and len(word) != 1
             and word not in stopwords
             and pattern.match(word) is None

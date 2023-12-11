@@ -88,52 +88,55 @@ def makeDB(path):
 
     # wordshash = []
     cutwordslist = []
-    try:
-        with open("tfdict.json", "r", encoding="utf-8") as f:
-            all_tfdict = json.load(f)
-    except FileNotFoundError:
-        all_tfdict = {}
+    # try:
+    #     with open("tfdict.json", "r", encoding="utf-8") as f:
+    #         all_tfdict = json.load(f)
+    # except FileNotFoundError:
+    #     all_tfdict = {}
 
-    try:
-        with open("dfdict.json", "r", encoding="utf-8") as f:
-            dfdict = json.load(f)
-    except FileNotFoundError:
-        dfdict = {}
+    # try:
+    #     with open("dfdict.json", "r", encoding="utf-8") as f:
+    #         all_dfdict = json.load(f)
+    # except FileNotFoundError:
+    #     all_dfdict = {}
+    
 
-    for path in file_list:
-        # メタデータを取得
-        metadata = PathtoMeta(path)
+    # for path in file_list:
+    #     # メタデータを取得
+    #     metadata = PathtoMeta(path)
 
-        # 内容をDBに保存
-        dbval = database.makedb(path)
+    #     # 内容をDBに保存
+    #     dbval = database.makeDB(path)
 
-        if dbval is None:
-            continue
-        else:
-            tfdict, cutwords, words_infile = dbval
-            # フォルダ全体の単語リスト
-            for tf in tfdict:
-                if tf in all_tfdict:
-                    all_tfdict[tf] += tfdict[tf]
-                else:
-                    all_tfdict[tf] = tfdict[tf]
+    #     if dbval is None:
+    #         continue
+    #     else:
+    #         tfdict, cutwords, words_infile = dbval
+    #         # フォルダ全体の単語リスト
+    #         for tf in tfdict:
+    #             if tf in all_tfdict:
+    #                 all_tfdict[tf] += tfdict[tf]
+    #             else:
+    #                 all_tfdict[tf] = tfdict[tf]
 
-            for word in words_infile:
-                if word in dfdict:
-                    dfdict[word] += words_infile[word]
-                else:
-                    dfdict[word] = words_infile[word]
+    #         for word in words_infile:
+    #             if word in dfdict:
+    #                 dfdict[word] += words_infile[word]
+    #             else:
+    #                 dfdict[word] = words_infile[word]
 
-            # 単語リスト
-            cutwordslist.append(" ".join(cutwords))
+    #         # 単語リスト
+    #         cutwordslist.append(" ".join(cutwords))
 
-            # json_string = json.dumps(all_tfdict, default=convert_to_json_serializable)
+    #         # json_string = json.dumps(all_tfdict, default=convert_to_json_serializable)
+
+    all_dfdict, all_tfdict = database.regDB(file_list)
 
     with open("tfdict.json", "w", encoding="utf-8") as f:
         json.dump(all_tfdict, f, ensure_ascii=False)
 
     with open("dfdict.json", "w", encoding="utf-8") as f:
-        json.dump(dfdict, f, ensure_ascii=False)
+        json.dump(all_dfdict, f, ensure_ascii=False)
 
     return cutwordslist
 
