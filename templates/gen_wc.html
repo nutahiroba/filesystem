@@ -75,6 +75,25 @@
             />
             <span id="stepVal">1</span>
           </div>
+          <input type="radio" id="tf" name="metric" value="tf" checked />
+          <label for="tf">TF値</label><br />
+
+          <input type="radio" id="df" name="metric" value="df" />
+          <label for="df">DF値</label><br />
+
+          <input type="radio" id="tfidf" name="metric" value="tfidf" />
+          <label for="tfidf">TF-IDF値</label><br />
+
+          <input type="checkbox" id="numeral" name="numeral" />
+          <label for="numeral">数詞</label><br />
+
+          <input type="checkbox" id="commonNoun" name="commonNoun" />
+          <label for="commonNoun">普通名詞</label><br />
+
+          <input type="checkbox" id="properNoun" name="properNoun" />
+          <label for="properNoun">固有名詞</label><br />
+
+          <p id="result"></p>
           <input type="submit" value="Generate" />
         </form>
       </div>

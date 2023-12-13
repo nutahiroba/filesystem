@@ -4,6 +4,7 @@ document
     event.preventDefault();
 
     var formData = new FormData(this);
+    console.log(formData);
 
     fetch("/generate", {
       // ここにはサーバーのエンドポイントURLを入れてください

@@ -99,7 +99,6 @@ def makeDB(path):
     #         all_dfdict = json.load(f)
     # except FileNotFoundError:
     #     all_dfdict = {}
-    
 
     # for path in file_list:
     #     # メタデータを取得
@@ -159,7 +158,30 @@ def makeWC(para):
 
     # wc = make_wc.get(dfdict, para)
 
-    wc = make_wc.get(all_tfdict, para)
+    numeral = para.numeral
+    commonNoun = para.commonNoun
+    properNoun = para.properNoun
+
+    # print(numeral[0], numeral[0] is True)
+    # print(commonNoun[0], commonNoun[0] is None)
+    # print(properNoun, properNoun is True)
+
+    with open("word_index.json", "r", encoding="utf-8") as f:
+        words_index = json.load(f)
+    words = ""
+    if numeral[0]:
+        numeral_text = " ".join(words_index["数詞"])
+        words += numeral_text
+    if commonNoun[0]:
+        commonNoun_text = " ".join(words_index["普通名詞"])
+        words += commonNoun_text
+    if properNoun:
+        proper_text = " ".join(words_index["固有名詞"])
+        words += proper_text
+
+    wc = make_wc.get(words, para)
+
+    # wc = make_wc.get(all_tfdict, para)
 
     return wc.to_svg()
 

@@ -5,7 +5,7 @@ from wordcloud import WordCloud
 def get(words, para):
     # print(para.color, para.width, para.height, para.step, para.min, para.max)
     wc = WordCloud(
-        font_path="C:\Windows\Fonts\yumin.ttf",
+        font_path="yumin.ttf",
         prefer_horizontal=1,
         background_color="white",
         # ~~~~~ここまでデフォルト~~~~~
@@ -18,6 +18,10 @@ def get(words, para):
         max_font_size=para.max,
     )
 
+    metric = para.metric
+
+    # if metric == "tf":
+    #     dict =
     if type(words) == dict:
         wc.generate_from_frequencies(words)
     elif type(words) == str:

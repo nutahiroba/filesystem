@@ -5,13 +5,29 @@ from wc import main, tfidf
 
 
 class Parameter:
-    def __init__(self, color, width, height, min, max, step):
+    def __init__(
+        self,
+        color,
+        width,
+        height,
+        min,
+        max,
+        step,
+        metric,
+        numeral,
+        commonNoun,
+        properNoun,
+    ):
         self.color = color
         self.width = width
         self.height = height
         self.min = min
         self.max = max
         self.step = step
+        self.metric = metric
+        self.numeral = (numeral,)
+        self.commonNoun = (commonNoun,)
+        self.properNoun = properNoun
 
 
 app = Flask(__name__, static_folder=".", static_url_path="")
@@ -32,12 +48,17 @@ def index():
 
 @app.route("/generate", methods=["POST"])
 def generate():
+    # print(request.form)
     color = request.form.get("color")
     height = request.form.get("height")
     width = request.form.get("width")
     min = request.form.get("min")
     max = request.form.get("max")
     step = request.form.get("step")
+    metric = request.form.get("metric")
+    numeral = request.form.get("numeral")
+    commonNoun = request.form.get("commonNoun")
+    properNoun = request.form.get("properNoun")
     # color, width, height, min
     para = Parameter(
         color=color,
@@ -46,6 +67,10 @@ def generate():
         min=int(min),
         max=int(max),
         step=int(step),
+        metric=metric,
+        numeral=bool(numeral),
+        commonNoun=bool(commonNoun),
+        properNoun=bool(properNoun),
     )
 
     wc = main.makeWC(para)
