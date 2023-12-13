@@ -6,7 +6,6 @@ __pycache__/
 !stopword.txt
 *.svg
 *.jpg
-test.py
 test4.py
 *.json
 *.db

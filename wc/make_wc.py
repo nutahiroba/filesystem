@@ -5,7 +5,7 @@ from wordcloud import WordCloud
 def get(words, para):
     # print(para.color, para.width, para.height, para.step, para.min, para.max)
     wc = WordCloud(
-        font_path="yumin.ttf",
+        font_path=r"C:\Users\nutta\myProject\FileSystem\SourceHanSerifK-Light.otf",
         prefer_horizontal=1,
         background_color="white",
         # ~~~~~ここまでデフォルト~~~~~
