@@ -1,10 +1,12 @@
 # https://zenn.dev/robes/articles/a3e1a6e80efd99#%E5%85%B1%E8%B5%B7%E8%A1%8C%E5%88%97%E3%81%AE%E4%BD%9C%E6%88%90
-
+import time
 import itertools
 from wc import database
 import collections
 import pandas as pd
 import re
+
+start_time = time.time()
 
 pattern = re.compile(r"^(?:\d+|[A-Za-z]+)$")
 
@@ -13,7 +15,7 @@ result = database.get_allfiles()
 sentences = []
 # 一つのリストにする
 target_combs = []
-for file in result[:50]:
+for file in result[:150]:
     sentence = []
     for word in file.cutwords[1:-1].split(","):
         if len(word) != 1 and pattern.match(word) is None:
@@ -48,6 +50,7 @@ for file in result[:50]:
 
     df = pd.DataFrame(
         [{"1番目": i[0][0], "2番目": i[0][1], "count": i[1]} for i in ct.most_common()]
+        # [{"1番目": i[0][0], "2番目": i[0][1], "count": 1} for i in ct.most_common()]
     )
 
 print(df)
@@ -93,4 +96,8 @@ def kyoki_network(df):
 
 
 got_net = kyoki_network(df)
-got_net.show("kyoki.html")
+got_net.show("kyoki_df150.html")
+
+end_time = time.time()
+
+print("time: ", end_time - start_time)

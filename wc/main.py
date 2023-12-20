@@ -143,6 +143,16 @@ def makeDB(path):
     # tfitfdict = tfidf.getvalues(cutwordslist)
 
 
+def list_to_dict(word_list):
+    word_count_dict = {}
+    for word in word_list:
+        if word in word_count_dict:
+            word_count_dict[word] += 1
+        else:
+            word_count_dict[word] = 1
+    return word_count_dict
+
+
 def makeWC(para):
     try:
         with open("tfdict.json", "r", encoding="utf-8") as f:
@@ -173,11 +183,19 @@ def makeWC(para):
         numeral_text = " ".join(words_index["数詞"])
         words += numeral_text
     if commonNoun[0]:
-        commonNoun_text = " ".join(words_index["普通名詞"])
-        words += commonNoun_text
+        tmp_words = ""
+        for key in words_index["普通名詞"]:
+            tmp_words += " ".join(words_index["普通名詞"][key])
+        words += tmp_words
+        # commonNoun_text = " ".join(words_index["普通名詞"])
+        # words += commonNoun_text
     if properNoun:
         proper_text = " ".join(words_index["固有名詞"])
         words += proper_text
+        
+    words = words.split(" ")
+    words = list_to_dict(words)
+    print(words)
 
     wc = make_wc.get(words, para)
 

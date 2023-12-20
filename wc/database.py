@@ -178,13 +178,27 @@ def wordtolist(path, word_index):
         word = node.surface
         hinshi = node.feature.split(",")[0]
         sub_hinshi = node.feature.split(",")[1]
+        sub_sub_hinshi = node.feature.split(",")[2]
 
         if hinshi == word_type and word not in stopwords and len(word) != 1:
             cutwords.append(word)
-            if sub_hinshi in word_index:
-                word_index[sub_hinshi].append(word)
+            # if sub_hinshi in word_index:
+            #     word_index[sub_hinshi].append(word)
+            # else:
+            #     word_index[sub_hinshi] = [word]
+            if sub_hinshi == "普通名詞":
+                if sub_hinshi in word_index:
+                    if sub_sub_hinshi in word_index[sub_hinshi]:
+                        word_index[sub_hinshi][sub_sub_hinshi].append(word)
+                    else:
+                        word_index[sub_hinshi][sub_sub_hinshi] = [word]
+                else:
+                    word_index[sub_hinshi] = {sub_sub_hinshi: [word]}
             else:
-                word_index[sub_hinshi] = [word]
+                if sub_hinshi in word_index:
+                    word_index[sub_hinshi].append(word)
+                else:
+                    word_index[sub_hinshi] = [word]
 
         node = node.next
     # tfdict = sorted(tfdict.items(), key = lambda x:x[1], reverse=True)
