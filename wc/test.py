@@ -48,6 +48,7 @@ def make_wordcloud(dict, html_name):
 
     """
 
+    html_name = r"html_wc/" + html_name
     with open(html_name, "w", encoding="utf-8") as f:
         f.write(wordcloud)
         f.write(javascript)

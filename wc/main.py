@@ -183,19 +183,24 @@ def makeWC(para):
         numeral_text = " ".join(words_index["数詞"])
         words += numeral_text
     if commonNoun[0]:
-        tmp_words = ""
-        for key in words_index["普通名詞"]:
-            tmp_words += " ".join(words_index["普通名詞"][key])
-        words += tmp_words
+        meishi = "一般"
+        # "一般" or "副詞可能" or "助数詞可能" or "サ変形状詞可能" or "形状詞可能"
+        words += " ".join(words_index["普通名詞"][meishi])
+
+        # tmp_words = ""
+        # for key in words_index["普通名詞"]:
+        #     tmp_words += " ".join(words_index["普通名詞"][key])
+        # words += tmp_words
+
         # commonNoun_text = " ".join(words_index["普通名詞"])
         # words += commonNoun_text
     if properNoun:
         proper_text = " ".join(words_index["固有名詞"])
         words += proper_text
-        
+
     words = words.split(" ")
     words = list_to_dict(words)
-    print(words)
+    # print(words)
 
     wc = make_wc.get(words, para)
 
