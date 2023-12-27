@@ -17,9 +17,9 @@
               name="height"
               id="height"
               min="100"
-              max="1000"
+              max="2000"
               step="10"
-              value="500"
+              value="1000"
             />
             <span id="heightVal">500</span>
           </div>
@@ -30,9 +30,9 @@
               name="width"
               id="width"
               min="100"
-              max="1000"
+              max="2000"
               step="10"
-              value="500"
+              value="1000"
             />
             <span id="widthVal">500</span>
           </div>
@@ -42,10 +42,10 @@
               type="range"
               name="min"
               id="min"
-              min="10"
+              min="1"
               max="100"
               step="1"
-              value="20"
+              value="10"
             />
             <span id="minVal">15</span>
           </div>
@@ -56,9 +56,9 @@
               name="max"
               id="max"
               min="10"
-              max="500"
+              max="200"
               step="1"
-              value="250"
+              value="150"
             />
             <span id="maxVal">250</span>
           </div>
@@ -84,18 +84,19 @@
           <input type="radio" id="tfidf" name="metric" value="tfidf" />
           <label for="tfidf">TF-IDF値</label><br />
 
-          <input type="checkbox" id="numeral" name="numeral" checked />
+          <!-- <input type="checkbox" id="numeral" name="numeral" checked />
           <label for="numeral">数詞</label><br />
 
           <input type="checkbox" id="commonNoun" name="commonNoun" checked />
           <label for="commonNoun">普通名詞</label><br />
 
           <input type="checkbox" id="properNoun" name="properNoun" checked />
-          <label for="properNoun">固有名詞</label><br />
+          <label for="properNoun">固有名詞</label><br /> -->
 
           <p id="result"></p>
           <input type="submit" value="Generate" />
         </form>
+        <input type="button" value="network" id="network" />
       </div>
       <div id="wordcloud"></div>
     </div>

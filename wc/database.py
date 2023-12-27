@@ -10,6 +10,7 @@ import docx
 import hashlib
 import re
 import json
+from PyPDF2 import PdfReader
 
 # from wc import title_model
 
@@ -47,15 +48,24 @@ Base.metadata.create_all(engine)
 
 def PathtoTxt(path):
     if ".docx" in str(path):
+        print(path)
         doc = docx.Document(path)
         words = ""
         for par in doc.paragraphs:
-            words += par.text.replace("\u2028", "")
+            words += par.text.replace("\u2028", "").lower()
     elif ".txt" in str(path):
         # 行ごとに分割
         with open(path, encoding="utf-8") as f:
             contents = f.readlines()
         words = "".join(contents)
+    elif ".pdf" in str(path):
+        with open(path, "rb") as f:
+            pdf = PdfReader(f)
+            words = ""
+            for page in pdf.pages:
+                text = page.extract_text()
+                if text:
+                    words += text
     return words
 
 

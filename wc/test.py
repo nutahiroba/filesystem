@@ -15,7 +15,22 @@ import re
 
 n = 10
 
+import sys
 
+def json_sort(path):
+    with open(path, "r", encoding="utf-8") as f:
+        tfdict = json.load(f)
+
+    sorted_tfdict = sorted(tfdict.items(), key=lambda x: x[1], reverse=True)
+    sum = 0
+    for val in tfdict.values():
+        sum += val
+    print(sum)
+
+    with open(f"sorted_{path}", "w", encoding="utf-8") as f:
+        json.dump(sorted_tfdict, f, ensure_ascii=False)
+        
+json_sort("tfdict.json")
 
 def make_wordcloud(dict, html_name):
     wc = WordCloud(
@@ -62,18 +77,20 @@ def count_tfidf():
 
     for file in tfidf.keys():
         tfidf[file] = sorted(tfidf[file].items(), key=lambda x: x[1], reverse=True)
-
+        n = 1
         for word in tfidf[file][:n]:
             if word[0] in new_tfidf:
                 new_tfidf[word[0]] += 1
             else:
                 new_tfidf[word[0]] = 1
 
-    with open("tfidf10.json", "w", encoding="utf-8") as f:
+    with open(f"tfidf{n}.json", "w", encoding="utf-8") as f:
         json.dump(new_tfidf, f, ensure_ascii=False)
 
     return new_tfidf
 
+
+# count_tfidf()
 
 # new_dict = count_tfidf()
 
@@ -104,7 +121,8 @@ for word in tfidf10.keys():
 # with open("tfidf10_proper.json", "w", encoding="utf-8") as f:
 #     json.dump(new_dfdict, f, ensure_ascii=False)
 
-make_wordcloud(new_dfdict, "tfidf10_common.html")
+# make_wordcloud(new_dfdict, "tfidf10_common.html")
+
 
 def hinshi_sep(json_path):
     with open("word_index.json", "r", encoding="utf-8") as f:
@@ -130,6 +148,13 @@ def hinshi_sep(json_path):
 
     return new_dfdict
 
+
+list = ["tfidf10_common.json", "tfidf10_proper.json", "tfidf10_numeral.json"]
+words = " ".join(list)
+list2 = ["tfidf10_common.html", "tfidf10_proper.html", "tfidf10_numeral.html"]
+
+words += " ".join(list2)
+print(words)
 
 # test_dict = {}
 # test_dict["a"] = []

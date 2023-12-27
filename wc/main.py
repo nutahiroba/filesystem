@@ -154,17 +154,17 @@ def list_to_dict(word_list):
 
 
 def makeWC(para):
-    try:
-        with open("tfdict.json", "r", encoding="utf-8") as f:
-            all_tfdict = json.load(f)
-    except FileNotFoundError:
-        all_tfdict = {}
+    # try:
+    #     with open("tfdict.json", "r", encoding="utf-8") as f:
+    #         all_tfdict = json.load(f)
+    # except FileNotFoundError:
+    #     all_tfdict = {}
 
-    try:
-        with open("dfdict.json", "r", encoding="utf-8") as f:
-            dfdict = json.load(f)
-    except:
-        dfdict = {}
+    # try:
+    #     with open("dfdict.json", "r", encoding="utf-8") as f:
+    #         dfdict = json.load(f)
+    # except:
+    #     dfdict = {}
 
     # wc = make_wc.get(dfdict, para)
 
@@ -179,30 +179,74 @@ def makeWC(para):
     with open("word_index.json", "r", encoding="utf-8") as f:
         words_index = json.load(f)
     words = ""
-    if numeral[0]:
-        numeral_text = " ".join(words_index["数詞"])
-        words += numeral_text
-    if commonNoun[0]:
-        meishi = "一般"
-        # "一般" or "副詞可能" or "助数詞可能" or "サ変形状詞可能" or "形状詞可能"
-        words += " ".join(words_index["普通名詞"][meishi])
 
-        # tmp_words = ""
-        # for key in words_index["普通名詞"]:
-        #     tmp_words += " ".join(words_index["普通名詞"][key])
-        # words += tmp_words
+    hinshis = [
+        # "数詞",
+        "普通名詞",
+        "固有名詞",
+    ]
+    sub_hinshis = [
+        "サ変可能",
+        "一般",
+        "副詞可能",
+        "助数詞可能",
+        "サ変形状詞可能",
+        "形状詞可能",
+    ]
 
-        # commonNoun_text = " ".join(words_index["普通名詞"])
-        # words += commonNoun_text
+    for hinshi in hinshis:
+        if hinshi == "普通名詞":
+            for sub_hinshi in sub_hinshis:
+                if sub_hinshi != "助数詞可能":
+                    words += " " + " ".join(words_index[hinshi][sub_hinshi])
+        elif hinshi == "固有名詞":
+            words += " " + " ".join(words_index[hinshi])
+        else:
+            continue
+
+    # if numeral[0]:
+    #     numeral_text = " ".join(words_index["数詞"])
+    #     words += numeral_text
+    # if commonNoun[0]:
+    #     meishi = "一般"
+    # "一般" or "副詞可能" or "助数詞可能" or "サ変形状詞可能" or "形状詞可能"
+    #     words += " ".join(words_index["普通名詞"][meishi])
+
+    # tmp_words = ""
+    # for key in words_index["普通名詞"]:
+    #     tmp_words += " ".join(words_index["普通名詞"][key])
+    # words += tmp_words
+
+    # commonNoun_text = " ".join(words_index["普通名詞"])
+    # words += commonNoun_text
     if properNoun:
         proper_text = " ".join(words_index["固有名詞"])
         words += proper_text
 
+    metric = para.metric
     words = words.split(" ")
-    words = list_to_dict(words)
-    # print(words)
+    new_words = {}
+    if metric == "df":
+        with open("dfdict.json", "r", encoding="utf-8") as f:
+            dfwords = json.load(f)
+        for word in words:
+            if word not in new_words.keys() and word in dfwords.keys():
+                new_words[word] = dfwords[word]
+            else:
+                continue
+    elif metric == "tfidf":
+        with open("tfidf1.json", "r", encoding="utf-8") as f:
+            tfidfwords = json.load(f)
+        for word in words:
+            if word not in new_words.keys() and word in tfidfwords.keys():
+                new_words[word] = tfidfwords[word]
+            else:
+                continue
+    else:
+        new_words = list_to_dict(words)
+    # print(new_words)
 
-    wc = make_wc.get(words, para)
+    wc = make_wc.get(new_words, para)
 
     # wc = make_wc.get(all_tfdict, para)
 
@@ -230,11 +274,14 @@ def getfiles(received_words, match_files):
     with open("tfidfdict.json", "r", encoding="utf-8") as f:
         tfidfdict = json.load(f)
     result_files = {}
-    for file in match_files:
+    for file in match_files.keys():
         tmp = {}
         for word in received_words:
-            tmp[word] = tfidfdict[word][file]
-            result_files[file] = tmp
+            if file in tfidfdict[word].keys():
+                tmp[word] = tfidfdict[word][file]
+                result_files[file] = tmp
+            else:
+                continue
     return result_files
 
 

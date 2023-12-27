@@ -22,7 +22,7 @@ document
         const recordedTexts = [];
 
         const textElements = document.querySelectorAll("text");
-
+        console.log(textElements.length);
         textElements.forEach((textElement) => {
           textElement.style.fill = "black";
           // ------------------transform属性をx,y属性に変更する----------------------
