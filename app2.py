@@ -43,6 +43,7 @@ def index():
     # wc = main.makeWC(para)
     # return render_template("wc.html", data=wc)
 
+    return render_template("gen_wc.html")
     return render_template("kyoki.html")
 
 
@@ -77,9 +78,10 @@ def generate():
 
     return jsonify({"items": wc})
 
+
 @app.route("/netwotk", methods=["POST"])
 def netwotk():
-    return jsonify({"items": "network"})
+    return render_template("kyoki.html")
 
 
 # @app.route('/sendpath', method = ["POST"]:)
