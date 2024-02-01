@@ -11,16 +11,20 @@ start_time = time.time()
 pattern = re.compile(r"^(?:\d+|[A-Za-z]+)$")
 
 # 文書ごとの単語リストを作成
-result = database.get_allfiles()
+result = database.get_allfiles()[0:100]
 sentences = []
 # 一つのリストにする
 target_combs = []
-for file in result[:150]:
+cnt = 1
+
+for file in result:
+    print(file.path, cnt, len(result))
+    cnt += 1
     sentence = []
     for word in file.cutwords[1:-1].split(","):
         if len(word) != 1 and pattern.match(word) is None:
             sentence.append(word)
-    sentences.append(sentence)
+    # sentences.append(sentence)
 
     # 文章から可能な限りの単語の組を作成
     sentences_combs = [list(itertools.combinations(sentence, 2))]
@@ -68,7 +72,7 @@ def kyoki_network(df):
     )
 
     got_net.force_atlas_2based()
-    got_data = df[:150]
+    got_data = df
 
     sources = got_data["1番目"]  # count
     targets = got_data["2番目"]  # first
@@ -96,7 +100,7 @@ def kyoki_network(df):
 
 
 got_net = kyoki_network(df)
-got_net.show("kyoki_df150.html")
+got_net.show("kyoki_df_test.html")
 
 end_time = time.time()
 

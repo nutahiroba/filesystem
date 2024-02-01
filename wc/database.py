@@ -48,7 +48,6 @@ Base.metadata.create_all(engine)
 
 def PathtoTxt(path):
     if ".docx" in str(path):
-        print(path)
         doc = docx.Document(path)
         words = ""
         for par in doc.paragraphs:
